@@ -29,7 +29,7 @@ const ScrollToTop = props => {
 
   return (
     <Zoom in={trigger}>
-      <ScrollToTopStyled className={className} onClick={handleClick} role='presentation'>
+      <ScrollToTopStyled className={className} onClick={handleClick} role='ashb'>
         {children}
       </ScrollToTopStyled>
     </Zoom>

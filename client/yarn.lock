@@ -4255,32 +4255,32 @@ minimatch@^3.0.4, minimatch@^3.0.5, minimatch@^3.1.1, minimatch@^3.1.2:
   dependencies:
     brace-expansion "^1.1.7"
 
-minimist@^1.2.0, minimist@^1.2.6, minimist@~1.2.5:
-  version "1.2.8"
-  resolved "https://registry.npmjs.org/minimist/-/minimist-1.2.8.tgz"
-  integrity sha512-2yyAR8qBkN3YuheJanUpWC5U3bb5osDywNB8RzDVlDwDHbocAJveqqj1u8+SVD7jkWT4yvsHCpWqqWqAxb0zCA==
+"minimist@^1.2.0", "minimist@^1.2.6", "minimist@~1.2.5":
+  "integrity" "sha512-2yyAR8qBkN3YuheJanUpWC5U3bb5osDywNB8RzDVlDwDHbocAJveqqj1u8+SVD7jkWT4yvsHCpWqqWqAxb0zCA=="
+  "resolved" "https://registry.npmjs.org/minimist/-/minimist-1.2.8.tgz"
+  "version" "1.2.8"
 
-minipass@^3.0.0:
-  version "3.3.5"
-  resolved "https://registry.npmjs.org/minipass/-/minipass-3.3.5.tgz"
-  integrity sha512-rQ/p+KfKBkeNwo04U15i+hOwoVBVmekmm/HcfTkTN2t9pbQKCMm4eN5gFeqgrrSp/kH/7BYYhTIHOxGqzbBPaA==
+"minipass@^3.0.0":
+  "integrity" "sha512-rQ/p+KfKBkeNwo04U15i+hOwoVBVmekmm/HcfTkTN2t9pbQKCMm4eN5gFeqgrrSp/kH/7BYYhTIHOxGqzbBPaA=="
+  "resolved" "https://registry.npmjs.org/minipass/-/minipass-3.3.5.tgz"
+  "version" "3.3.5"
   dependencies:
-    yallist "^4.0.0"
+    "yallist" "^4.0.0"
 
-minipass@^4.0.0:
-  version "4.2.8"
-  resolved "https://registry.npmjs.org/minipass/-/minipass-4.2.8.tgz"
-  integrity sha512-fNzuVyifolSLFL4NzpF+wEF4qrgqaaKX0haXPQEdQ7NKAN+WecoKMHV09YcuL/DHxrUsYQOK3MiuDf7Ip2OXfQ==
+"minipass@^4.0.0":
+  "integrity" "sha512-fNzuVyifolSLFL4NzpF+wEF4qrgqaaKX0haXPQEdQ7NKAN+WecoKMHV09YcuL/DHxrUsYQOK3MiuDf7Ip2OXfQ=="
+  "resolved" "https://registry.npmjs.org/minipass/-/minipass-4.2.8.tgz"
+  "version" "4.2.8"
 
-minipass@^5.0.0:
-  version "5.0.0"
-  resolved "https://registry.npmjs.org/minipass/-/minipass-5.0.0.tgz"
-  integrity sha512-3FnjYuehv9k6ovOEbyOswadCDPX1piCfhV8ncmYtHOjuPwylVWsghTLo7rabjC3Rx5xD4HDx8Wm1xnMF7S5qFQ==
+"minipass@^5.0.0":
+  "integrity" "sha512-3FnjYuehv9k6ovOEbyOswadCDPX1piCfhV8ncmYtHOjuPwylVWsghTLo7rabjC3Rx5xD4HDx8Wm1xnMF7S5qFQ=="
+  "resolved" "https://registry.npmjs.org/minipass/-/minipass-5.0.0.tgz"
+  "version" "5.0.0"
 
-minizlib@^2.1.1:
-  version "2.1.2"
-  resolved "https://registry.npmjs.org/minizlib/-/minizlib-2.1.2.tgz"
-  integrity sha512-bAxsR8BVfj60DWXHE3u30oHzfl4G7khkSuPW+qvpd7jFRHm7dLxOjUk1EHACJ/hxLY8phGJ0YhYHZo7jil7Qdg==
+"minizlib@^2.1.1":
+  "integrity" "sha512-bAxsR8BVfj60DWXHE3u30oHzfl4G7khkSuPW+qvpd7jFRHm7dLxOjUk1EHACJ/hxLY8phGJ0YhYHZo7jil7Qdg=="
+  "resolved" "https://registry.npmjs.org/minizlib/-/minizlib-2.1.2.tgz"
+  "version" "2.1.2"
   dependencies:
     minipass "^3.0.0"
     yallist "^4.0.0"
@@ -4867,10 +4867,10 @@ react-draft-wysiwyg@1.15.0:
     linkify-it "^2.2.0"
     prop-types "^15.7.2"
 
-react-dropzone@14.2.3:
-  version "14.2.3"
-  resolved "https://registry.npmjs.org/react-dropzone/-/react-dropzone-14.2.3.tgz"
-  integrity sha512-O3om8I+PkFKbxCukfIR3QAGftYXDZfOE2N1mr/7qebQJHs7U+/RSL/9xomJNpRg9kM5h9soQSdf0Gc7OHF5Fug==
+"react-dropzone@^14.2.3":
+  "integrity" "sha512-O3om8I+PkFKbxCukfIR3QAGftYXDZfOE2N1mr/7qebQJHs7U+/RSL/9xomJNpRg9kM5h9soQSdf0Gc7OHF5Fug=="
+  "resolved" "https://registry.npmjs.org/react-dropzone/-/react-dropzone-14.2.3.tgz"
+  "version" "14.2.3"
   dependencies:
     attr-accept "^2.2.2"
     file-selector "^0.6.0"

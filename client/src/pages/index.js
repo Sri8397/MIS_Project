@@ -11,10 +11,10 @@ import Spinner from 'src/@core/components/spinner'
 import { useAuth } from 'src/hooks/useAuth'
 
 export const getHomeRoute = role => {
-  // console.log(role)
-  // if (role === 'emp') return '/acl'
-  // else return '/home'
   return '/home'
+}
+export const getFormRoute = role => {
+  return '/form'
 }
 
 const Home = () => {
@@ -31,9 +31,11 @@ const Home = () => {
     if (auth.user && auth.user[0].auth_id) {
       // console.log(auth.user[0].auth_id)
       const homeRoute = getHomeRoute(auth.user[0].auth_id)
+      const formRoute = getFormRoute(auth.user[0].auth_id)
       //  console.log(homeRoute)
       // Redirect user to Home URL
       router.replace(homeRoute)
+      router.replace(formRoute)
     } else {
       // console.log('okkk')
     }
