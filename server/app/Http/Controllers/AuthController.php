@@ -202,6 +202,7 @@ class AuthController extends ControllerAPI
         $master_menu = array();
         array_push($master_menu, array("title" => 'Dashboard', "path" => '/home'));
         array_push($master_menu, array("title" => 'Forms', "path" => '/form'));
+        array_push($master_menu, array("title" => 'View Forms', "path" => '/viewforms'));
         foreach ($menus as $key => $value) {
             // print_r($value);
             // exit;
