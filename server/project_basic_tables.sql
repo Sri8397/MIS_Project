@@ -268,7 +268,7 @@ CREATE TABLE IF NOT EXISTS `users` (
 -- Dumping data for table project.users: ~1 rows (approximately)
 DELETE FROM `users`;
 INSERT INTO `users` (`id`, `password`, `ci_password`, `auth_id`, `created_date`, `updated_date`, `user_hash`, `failed_attempt_cnt`, `success_attempt_cnt`, `is_blocked`, `status`, `remark`) VALUES
-	('1594', '$2y$10$OQAewjiBNjOml.RUQBpXx.BrsHnTDqPYpyIsvH4P8o4rrB7Y134.2', '8cc30530e786765a266ad6d7207084d8', 'emp', '2024-01-04 17:50:56', '2024-03-12 14:50:06', 'NoVOLyeLV9', 0, 0, 0, 'A', '');
+	('1800', '$2y$10$OQAewjiBNjOml.RUQBpXx.BrsHnTDqPYpyIsvH4P8o4rrB7Y134.2', '8cc30530e786765a266ad6d7207084d8', 'emp', '2024-01-04 17:50:56', '2024-03-12 14:50:06', 'NoVOLyeLV9', 0, 0, 0, 'A', '');
 
 -- Dumping structure for table project.user_auth_types
 CREATE TABLE IF NOT EXISTS `user_auth_types` (
@@ -357,3 +357,18 @@ INSERT INTO `user_login_attempts` (`id`, `time`, `password`, `status`, `ip`) VAL
 /*!40014 SET FOREIGN_KEY_CHECKS=IFNULL(@OLD_FOREIGN_KEY_CHECKS, 1) */;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40111 SET SQL_NOTES=IFNULL(@OLD_SQL_NOTES, 1) */;
+
+
+CREATE TABLE IF NOT EXISTS `uploads` (
+  `id` char(26),
+  `user_id` varchar(20) NOT NULL,
+  `name` varchar(255) NOT NULL, 
+  `original_name` varchar(255) NOT NULL, 
+  `file_path` varchar(255) NOT NULL, 
+  `size` bigint(20) unsigned NOT NULL, 
+  created_at timestamp, 
+  updated_at timestamp, 
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `uploads_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;

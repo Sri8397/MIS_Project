@@ -24,7 +24,7 @@ Route::fallback(function () {
 Route::controller(AuthController::class)->group(function () {
     Route::post('login', 'login');
     Route::post('validateuser', 'validateUser');
-    
+
     Route::post('login_api', 'login_api');
     Route::post('register', 'register');
     Route::post('logout', 'logout');
@@ -37,6 +37,15 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('mark-read-notification', 'markReadNotification');
     Route::post('GetBiometicAttendance', 'GetBiometicAttendance');
 });
+
+Route::prefix('uploads')->middleware('auth.check')->group(function () {
+    Route::controller(UploadController::class)->group(function () {
+        Route::get('/', 'index');
+        Route::post('/', 'store');
+        Route::get('{id}', 'show');
+    });
+});
+
 
 // here add routes Module wise
 
