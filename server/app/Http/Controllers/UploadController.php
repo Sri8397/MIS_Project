@@ -7,6 +7,7 @@ use App\Models\Upload;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use Exception;
 
 class UploadController extends Controller
 {
@@ -33,7 +34,8 @@ class UploadController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 'status' => 422, 
-                'errors' => $validator->messages()
+                'errors' => $validator->messages(), 
+                'message' => 'either file is not uploaded or file is not pdf or file size is greater than 2MB.',
             ], 422);
         }
 
@@ -72,8 +74,18 @@ class UploadController extends Controller
             ], 404);
         }
         $location = $upload->file_path;
-        $path = Storage::path($location);
+        try {
+            $path = Storage::path($location);
+            return response()->file($path);
+        }  
+        //catch exception
+        catch(Exception $e) {
+            return response()->json([ 
+                'status'=> 500,
+                'message'=> 'Something went wrong! '.$e->getMessage()
+            ], 500); 
+        }
+        
         // return response()->download($path);
-        return response()->file($path);
     }
 }
