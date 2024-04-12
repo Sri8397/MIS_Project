@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Button, Grid } from '@material-ui/core';
 import Component1 from './components/noticeTable';
 import Component2 from './components/officeOrderTable';
 import Component3 from './components/TenderTable';
@@ -6,8 +7,8 @@ import Component3 from './components/TenderTable';
 const MyComponent = () => {
   const [selectedOption, setSelectedOption] = useState(null);
 
-  const handleChange = (event) => {
-    setSelectedOption(event.target.value);
+  const handleClick = (option) => {
+    setSelectedOption(option);
   };
 
   const renderComponent = () => {
@@ -25,13 +26,17 @@ const MyComponent = () => {
 
   return (
     <div>
-      <label htmlFor="dropdown">Select an option:</label>
-      <select id="dropdown" value={selectedOption} onChange={handleChange}>
-        <option value="">Select...</option>
-        <option value="option1">Option 1</option>
-        <option value="option2">Option 2</option>
-        <option value="option3">Option 3</option>
-      </select>
+      <Grid container spacing={2} justify="center">
+        <Grid item>
+          <Button variant="contained" color="primary" onClick={() => handleClick('option1')}>Notices</Button>
+        </Grid>
+        <Grid item>
+          <Button variant="contained" color="primary" onClick={() => handleClick('option2')}>Office Orders</Button>
+        </Grid>
+        <Grid item>
+          <Button variant="contained" color="primary" onClick={() => handleClick('option3')}>Tenders</Button>
+        </Grid>
+      </Grid>
       {renderComponent()}
     </div>
   );
