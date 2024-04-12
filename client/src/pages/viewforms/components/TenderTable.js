@@ -52,6 +52,14 @@ const Component1 = () => {
             .catch((error) => console.error('Error fetching data:', error));
     }, []);
 
+    const sortedSampleData = sampleData.sort((a, b) => {
+      if (a.priority !== b.priority) {
+          return a.priority ? -1 : 1; // Sort by priority
+      } else {
+          return new Date(a.timeUploaded) - new Date(b.timeUploaded); // If priority is the same, sort by time uploaded
+      }
+  });
+
     const handleOpen = (pdfUrl) => {
         setSelectedPDF(pdfUrl);
         setOpen(true);
@@ -63,21 +71,24 @@ const Component1 = () => {
 
     return (
         <div>
-            <h2>Component 3</h2>
+            <h2>Tenders</h2>
             <TableContainer component={Paper}>
                 <Table className={classes.table} aria-label="simple table">
                     <TableHead>
                         <TableRow>
-                            <TableCell>Column 1</TableCell>
-                            <TableCell align="right">Column 2</TableCell>
-                            <TableCell align="right">Column 3</TableCell>
-                            <TableCell align="right">Column 4</TableCell>
-                            <TableCell align="right">Column 5 (Link)</TableCell>
-                            <TableCell align="right">Column 6 (PDF)</TableCell>
+                            <TableCell>Section </TableCell>
+                            <TableCell align="right">Dean</TableCell>
+                            <TableCell align="right">English Subject</TableCell>
+                            <TableCell align="right">Hindi Subject</TableCell>
+                            <TableCell align="right">End Date</TableCell>
+                            <TableCell align="right">Link</TableCell>
+                            <TableCell align="right">PDF_English</TableCell>
+                            <TableCell align="right">PDF_Hindi</TableCell>
+                            <TableCell align="right">Remark</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {sampleData.map((row) => (
+                        {sortedSampleData.map((row) => (
                             <TableRow key={row.id}>
                                 <TableCell component="th" scope="row">
                                     {row.column1}

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Button, Grid } from '@material-ui/core';
-import Component1 from './components/notice';
-import Component2 from './components/notice';
-import Component3 from './components/notice';
+import Component1 from './components/noticeTable';
+import Component2 from './components/officeOrderTable';
+import Component3 from './components/TenderTable';
 
 const MyComponent = () => {
   const [selectedOption, setSelectedOption] = useState(null);
@@ -28,13 +28,31 @@ const MyComponent = () => {
     <div>
       <Grid container spacing={2} justify="center">
         <Grid item>
-          <Button variant="contained" color="primary" onClick={() => handleClick('option1')}>Notices</Button>
+          <Button 
+            variant="contained" 
+            color={selectedOption === 'option1' ? 'secondary' : 'primary'} 
+            onClick={() => handleClick('option1')}
+          >
+            Notices
+          </Button>
         </Grid>
         <Grid item>
-          <Button variant="contained" color="primary" onClick={() => handleClick('option2')}>Office Orders</Button>
+          <Button 
+            variant="contained" 
+            color={selectedOption === 'option2' ? 'secondary' : 'primary'} 
+            onClick={() => handleClick('option2')}
+          >
+            Office Orders
+          </Button>
         </Grid>
         <Grid item>
-          <Button variant="contained" color="primary" onClick={() => handleClick('option3')}>Tenders</Button>
+          <Button 
+            variant="contained" 
+            color={selectedOption === 'option3' ? 'secondary' : 'primary'} 
+            onClick={() => handleClick('option3')}
+          >
+            Tenders
+          </Button>
         </Grid>
       </Grid>
       {renderComponent()}
