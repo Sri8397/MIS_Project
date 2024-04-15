@@ -1,24 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Grid, Typography, Button } from '@material-ui/core';
 import { useDropzone } from 'react-dropzone';
 
-function Page1({ formData, setFormData }) {
-  const [files, setFiles] = useState([]);
-
-  useEffect(() => {
-    // Populate files state with file names from formData if available
-    if (formData.page1 && formData.page1.files) {
-      const fileNames = formData.page1.files.map(file => ({ name: file }));
-      setFiles(fileNames);
-    }
-  }, [formData.page1]);
+function UploadArea({ formData, setFormData, uploadedFiles }) {
+  const [files, setFiles] = useState(uploadedFiles);
 
   const onDrop = (acceptedFiles) => {
-    setFiles(acceptedFiles);
+    const updatedFiles = [...files, ...acceptedFiles];
+    setFiles(updatedFiles);
     // For simplicity, let's just store the file names in the formData
     setFormData((prevData) => ({
       ...prevData,
-      page1: { ...prevData.page1, files: acceptedFiles.map(file => file.name) },
+      attachmentFiles: updatedFiles.map(file => ({
+        name: file.name,
+        file: file, // Store the file object
+      })),
     }));
   };
 
@@ -28,15 +24,12 @@ function Page1({ formData, setFormData }) {
     setFiles([]);
     setFormData((prevData) => ({
       ...prevData,
-      page1: { ...prevData.page1, files: [] },
+      attachmentFiles: [],
     }));
   };
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12}>
-        <Typography variant="h5">Page 1</Typography>
-      </Grid>
       <Grid item xs={12} style={{ border: '1px dashed #ccc', padding: '20px', borderRadius: '5px', textAlign: 'center', cursor: 'pointer' }} {...getRootProps()}>
         <input {...getInputProps()} />
         <Typography>Drag and drop files here, or click to select files</Typography>
@@ -55,4 +48,4 @@ function Page1({ formData, setFormData }) {
   );
 }
 
-export default Page1;
+export default UploadArea;
