@@ -14,7 +14,7 @@ export const getHomeRoute = role => {
   return '/home'
 }
 export const getFormRoute = role => {
-  return '/form'
+  return '/forms'
 }
 
 const Home = () => {

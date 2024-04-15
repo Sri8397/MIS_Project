@@ -9,7 +9,7 @@ function FormPage() {
 
   const handleOptionSelect = (option) => {
     setSelectedOption(option);
-    router.push(`/form/${option}`);
+    router.push(`/forms/${option}`);
   };
 
 

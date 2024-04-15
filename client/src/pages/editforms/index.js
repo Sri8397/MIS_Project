@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Button, Grid } from '@material-ui/core';
-import Component1 from './components/noticeTable';
-import Component2 from './components/officeOrderTable';
-import Component3 from './components/TenderTable';
+import Component1 from '../viewforms/components/noticeTable';
+import Component2 from '../viewforms/components/officeOrderTable';
+import Component3 from '../viewforms/components/TenderTable';
 
 const MyComponent = () => {
   const [selectedOption, setSelectedOption] = useState(null);
