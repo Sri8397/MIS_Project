@@ -268,7 +268,7 @@ CREATE TABLE IF NOT EXISTS `users` (
 -- Dumping data for table project.users: ~1 rows (approximately)
 DELETE FROM `users`;
 INSERT INTO `users` (`id`, `password`, `ci_password`, `auth_id`, `created_date`, `updated_date`, `user_hash`, `failed_attempt_cnt`, `success_attempt_cnt`, `is_blocked`, `status`, `remark`) VALUES
-	('1800', '$2y$10$OQAewjiBNjOml.RUQBpXx.BrsHnTDqPYpyIsvH4P8o4rrB7Y134.2', '8cc30530e786765a266ad6d7207084d8', 'emp', '2024-01-04 17:50:56', '2024-03-12 14:50:06', 'NoVOLyeLV9', 0, 0, 0, 'A', '');
+	('1594', '$2y$10$OQAewjiBNjOml.RUQBpXx.BrsHnTDqPYpyIsvH4P8o4rrB7Y134.2', '8cc30530e786765a266ad6d7207084d8', 'emp', '2024-01-04 17:50:56', '2024-03-12 14:50:06', 'NoVOLyeLV9', 0, 0, 0, 'A', '');
 
 -- Dumping structure for table project.user_auth_types
 CREATE TABLE IF NOT EXISTS `user_auth_types` (
