@@ -6,26 +6,59 @@ use App\Models\OfficeOrder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use App\Traits\PDFControllerTrait;
+use Illuminate\Support\Facades\Date;
 use Exception;
 
 class OfficeOrderController extends Controller
 {
+
+    use PDFControllerTrait;
+
     public function index()
     {
         $officeOrders = OfficeOrder::all();
-        return response()->json(['data' => $officeOrders], 200);
+
+        $officeOrdersData = [];
+
+        foreach ($officeOrders as $officeOrder) {
+            $data = [
+                'id' => $officeOrder->id,
+                'title_en' => $officeOrder->title_en,
+                'title_hi' => $officeOrder->title_hi,
+                'last_date_time' => $officeOrder->last_date_time,
+                'remarks' => $officeOrder->remarks,
+                'department_section_id' => $officeOrder->department_section_id,
+            ];
+
+            // If attachment is present, generate a clickable link for it
+            if ($officeOrder->attachment) {
+                $data['attachment_link'] = route('office-orders.pdf', ['id' => $officeOrder->id]);
+            } else if ($officeOrder->attachment_link) {
+                $data['attachment_link'] = $officeOrder->attachment_link;
+            }
+
+            $officeOrdersData[] = $data;
+        }
+
+        return response()->json(['data' => $officeOrdersData], 200);
     }
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'title_en' => 'required|max:255',
             'title_hi' => 'required|max:255',
-            'last_date_time' => 'required|date',
+            'last_date_time' => [
+                'required',
+                'date',
+                'after_or_equal:' . Date::now()->addDays(2)->toDateString(), // Ensure the date is at least two days in the future
+            ],
             'attachment' => 'nullable|file|mimes:pdf|max:2048',
             'attachment_link' => 'nullable|url',
             'remarks' => 'nullable|string',
             'department_section_id' => 'required|exists:department_sections,id',
         ]);
+
 
         if ($validator->fails()) {
             return response()->json([
@@ -76,19 +109,6 @@ class OfficeOrderController extends Controller
         }
 
         return response()->json(['data' => $data], 200);
-    }
-
-    public function servePDF($id)
-    {
-        $officeOrder = OfficeOrder::find($id);
-
-        if (!$officeOrder || !$officeOrder->attachment_link) {
-            return response()->json(['error' => 'PDF file not found'], 404);
-        }
-
-        $location = $officeOrder->attachment;
-        $path = Storage::path($location);
-        return response()->file($path);
     }
 
     public function update(Request $request, $id)
