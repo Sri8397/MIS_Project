@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\OfficeOrderController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UploadController;
@@ -47,8 +48,13 @@ Route::prefix('uploads')->middleware('auth.check')->group(function () {
     });
 });
 
+Route::get('office-orders', [OfficeOrderController::class, 'index']);
+Route::post('office-orders', [OfficeOrderController::class, 'store']);
+Route::get('office-orders/{id}', [OfficeOrderController::class, 'show']);
+Route::get('office-orders/{id}/pdf', 'App\Http\Controllers\OfficeOrderController@servePDF')->name('office-orders.pdf');
+Route::post('office-orders/{id}/update', [OfficeOrderController::class, 'update']);
+Route::delete('office-orders/{id}', [OfficeOrderController::class, 'destroy']);
 
 // here add routes Module wise
-
 include('adminRoutes.php');
 include('userRoutes.php');
