@@ -78,6 +78,12 @@ Route::get('tenders/{id}/pdf', function ($id) {
     return (new TenderController)->servePDF(Tender::class, $id);
 })->name('tenders.pdf');
 
+
+use App\Http\Controllers\DepartmentSectionController;
+
+Route::get('department-sections', [DepartmentSectionController::class, 'index']);
+
+
 // here add routes Module wise
 include('adminRoutes.php');
 include('userRoutes.php');
