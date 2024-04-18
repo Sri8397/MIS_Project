@@ -410,3 +410,27 @@ INSERT INTO office_orders (title_en, title_hi, last_date_time, department_sectio
 ('Office Order 1 English Title', 'Office Order 1 Hindi Title', '2024-04-20 09:00:00', 1),
 ('Office Order 2 English Title', 'Office Order 2 Hindi Title', '2024-04-22 10:00:00', 3),
 ('Office Order 3 English Title', 'Office Order 3 Hindi Title', '2024-04-25 12:00:00', 2);
+
+
+-- Create table for tenders
+CREATE TABLE tenders (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    tender_number INT NOT NULL,
+    category VARCHAR(255) NOT NULL,
+    brief_description_en VARCHAR(255) NOT NULL,
+    brief_description_hi VARCHAR(255) NOT NULL,
+    last_date_time DATETIME NOT NULL,
+    intender_email VARCHAR(255) NOT NULL,
+    attachment VARCHAR(255),
+    attachment_link VARCHAR(255),
+    remarks TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- Insert sample data into the tenders table
+INSERT INTO tenders (tender_number, category, brief_description_en, brief_description_hi, last_date_time, intender_email, attachment, attachment_link, remarks)
+VALUES
+    (1001, 'Construction', 'Construction of Building', 'इमारत निर्माण', '2024-05-01 12:00:00', 'example@example.com', 'example.pdf', 'https://example.com/example.pdf', 'Sample remarks for the tender.'),
+    (1002, 'Infrastructure', 'Road Construction Project', 'सड़क निर्माण परियोजना', '2024-05-03 12:00:00', 'info@example.com', NULL, NULL, 'This tender is for the construction of roads.');
+
