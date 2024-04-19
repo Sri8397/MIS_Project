@@ -85,7 +85,7 @@ Route::prefix('tenders')->middleware('auth.check')->group(function () {
         Route::post('{id}', [TenderController::class, 'update']);
         Route::delete('{id}', [TenderController::class, 'destroy']);
         Route::get('{id}/pdf', function ($id) {
-            return (new TenderController)->servePDF(OfficeOrder::class, $id);
+            return (new TenderController)->servePDF(Tender::class, $id);
         })->name('office-orders.pdf');
     });
 });
@@ -100,7 +100,7 @@ Route::prefix('notices')->middleware('auth.check')->group(function () {
         Route::post('{id}', [NoticeController::class, 'update']);
         Route::delete('{id}', [NoticeController::class, 'destroy']);
         Route::get('{id}/pdf', function ($id) {
-            return (new NoticeController)->servePDF(OfficeOrder::class, $id);
+            return (new NoticeController)->servePDF(Notice::class, $id);
         })->name('office-orders.pdf');
     });
 });
