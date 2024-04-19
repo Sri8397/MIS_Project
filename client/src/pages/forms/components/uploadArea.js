@@ -2,37 +2,28 @@ import React, { useState } from 'react';
 import { Grid, Typography, Button } from '@material-ui/core';
 import { useDropzone } from 'react-dropzone';
 
-function UploadArea({ formData, setFormData, uploadedFiles }) {
-  const [files, setFiles] = useState(uploadedFiles);
-
+function UploadArea({ files, setFiles, setErrorMessage }) {
   const onDrop = (acceptedFiles) => {
-    const updatedFiles = [...files, ...acceptedFiles];
-    setFiles(updatedFiles);
-    // For simplicity, let's just store the file names in the formData
-    setFormData((prevData) => ({
-      ...prevData,
-      attachmentFiles: updatedFiles.map(file => ({
-        name: file.name,
-        file: file, // Store the file object
-      })),
-    }));
+    const pdfFiles = acceptedFiles.filter(file => file.type === 'application/pdf');
+    if(pdfFiles.length === 0) {
+      setErrorMessage('Please upload only PDF files');
+      return;
+    }else{
+      setFiles(pdfFiles);
+    }
   };
 
   const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
   const clearFiles = () => {
     setFiles([]);
-    setFormData((prevData) => ({
-      ...prevData,
-      attachmentFiles: [],
-    }));
   };
 
   return (
     <Grid container spacing={2}>
       <Grid item xs={12} style={{ border: '1px dashed #ccc', padding: '20px', borderRadius: '5px', textAlign: 'center', cursor: 'pointer' }} {...getRootProps()}>
-        <input {...getInputProps()} />
-        <Typography>Drag and drop files here, or click to select files</Typography>
+        <input {...getInputProps()} accept="application/pdf" />
+        <Typography type="file">Drag and drop PDF files here, or click to select PDF files</Typography>
         <ul>
           {files.map(file => (
             <li key={file.name}>{file.name}</li>

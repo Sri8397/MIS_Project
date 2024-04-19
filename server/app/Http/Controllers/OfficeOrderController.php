@@ -53,7 +53,7 @@ class OfficeOrderController extends Controller
                 'date',
                 'after_or_equal:' . Date::now()->addDays(2)->toDateString(), // Ensure the date is at least two days in the future
             ],
-            'attachment' => 'nullable|file|mimes:pdf|max:2048',
+            'attachment' => 'nullable|file|mimes:pdf|max:5120',
             'attachment_link' => 'nullable|url',
             'remarks' => 'nullable|string',
             'department_section_id' => 'required|exists:department_sections,id',
@@ -123,7 +123,7 @@ class OfficeOrderController extends Controller
             'title_en' => 'sometimes|required|max:255',
             'title_hi' => 'sometimes|required|max:255',
             'last_date_time' => 'sometimes|required|date',
-            'attachment' => 'nullable|file|mimes:pdf|max:2048',
+            'attachment' => 'nullable|file|mimes:pdf|max:5120',
             'attachment_link' => 'nullable|url',
             'remarks' => 'nullable|string',
             'department_section_id' => 'sometimes|required|exists:department_sections,id',
@@ -133,7 +133,7 @@ class OfficeOrderController extends Controller
             return response()->json([
                 'status' => 422,
                 'errors' => $validator->messages(),
-                'message' => 'Either file is not uploaded or file is not pdf or file size is greater than 2MB.',
+                'message' => 'Either file is not uploaded or file is not pdf or file size is greater than 5MB.',
             ], 422);
         }
 

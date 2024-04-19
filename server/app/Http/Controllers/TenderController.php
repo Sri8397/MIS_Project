@@ -136,7 +136,7 @@ class TenderController extends Controller
             'attachment_link' => 'nullable|url',
             'remarks' => 'nullable|string',
         ]);
-
+    
         if ($validator->fails()) {
             return response()->json([
                 'status' => 422,

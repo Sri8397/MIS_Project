@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
   Typography,
@@ -13,7 +13,8 @@ import {
   FormControlLabel,
 } from '@material-ui/core';
 import UploadArea from '../components/uploadArea';
-import { set } from 'nprogress';
+import axios from 'axios';
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -59,9 +60,16 @@ const useStyles = makeStyles((theme) => ({
 const OfficeOrders = () => {
   const classes = useStyles();
   const [step, setStep] = useState(1);
+  const [category, setCategory] = useState('');
+  const [options, setOptions] = useState([]);
+  const [elements, setElements] = useState([]); // State for options based on category
+  const [selectedOption, setSelectedOption] = useState('');
+
+  // State for selected option ID
+  const [files, setFiles] = useState([]);
   const [formData, setFormData] = useState({
-    section: '',
-    department: '',
+    type: '',
+    name: '',
     englishTitle: '',
     hindiTitle: '',
     lastDate: '',
@@ -69,9 +77,42 @@ const OfficeOrders = () => {
     attachmentType: '',
     attachmentLink: '',
     attachmentFiles: [],
-    remarks: '',
-    officeOrderYear: (new Date().getFullYear()).toString()
+    remarks: ''
   });
+
+  useEffect(() => {
+    const fetchTypes = async () => {
+      try{
+        const res = await axios.get('http://localhost:8000/api/department-sections');
+        setElements(res.data.data);
+      } catch(e){
+        console.log(e)
+      }
+    }
+    fetchTypes();
+  }, [])
+
+const handleCategoryChange = (event) => {
+  const { value } = event.target;
+  setCategory(value);
+  setFormData((prevData) => ({
+    ...prevData,
+    type: value,
+  }));
+  const filteredOptions = elements
+  .filter((item) => item.type === value) 
+  .map((item) => item.name); 
+  setOptions(filteredOptions);
+};
+
+const handleOptionChange = (event) => {
+  setSelectedOption(event.target.value);
+  setFormData((prevData) => ({
+    ...prevData,
+    name: event.target.value,
+  }));
+};
+
   const [errorMessage, setErrorMessage] = useState(''); // State for error message
   const [openModal, setOpenModal] = useState(false);
 
@@ -98,14 +139,7 @@ const OfficeOrders = () => {
         }));
       }
       // Reset attachmentLink if attachmentType is changed to 'upload'
-      else if (name === 'attachmentType' && value === 'upload') {
-        setFormData((prevData) => ({
-          ...prevData,
-          [name]: value,
-          attachmentLink: '',
-          attachmentFiles: value === 'upload' ? [] : prevData.attachmentFiles,
-        }));
-      } else {
+      else {
         setFormData((prevData) => ({
           ...prevData,
           [name]: value,
@@ -114,9 +148,11 @@ const OfficeOrders = () => {
     }
   };
 
+
   const nextStep = () => {
-    if (step === 1 && (!formData.section || !formData.department)) {
+    if (step === 1 && (category === '' || selectedOption === '')) {
       setErrorMessage('Please fill in all required fields.');
+      console.log("error")
       return;
     }
     if (step === 2 && (!formData.englishTitle || !formData.hindiTitle)) {
@@ -136,24 +172,46 @@ const OfficeOrders = () => {
     setStep((prevStep) => prevStep - 1);
   };
 
-  const submitForm = () => {
+  const submitForm = async () => {
     if(step === 4 && formData.attachmentRequired && !formData.attachmentType){
       setErrorMessage('Please fill in all required fields.');
       return;
     }
-    if (step === 4 && formData.attachmentType === 'link' && !formData.attachmentLink || formData.attachmentType === 'upload' && formData.attachmentFiles.length === 0) {
+    if (step === 4 && formData.attachmentType === 'link' && !formData.attachmentLink || formData.attachmentType === 'upload' && files.length === 0) {
       setErrorMessage('Please fill in all required fields.');
       return;
     }
-    // Implement form submission logic here
-    console.log('Form submitted:', formData);
-    setErrorMessage(''); // Clear error message
-    setOpenModal(true); // Open modal after form submission
+  
+    const requestBody = new FormData();
+    if (formData.attachmentType === 'link') {
+      requestBody.append('attachment_link', formData.attachmentLink);
+    } else if (formData.attachmentType === 'upload') {
+      requestBody.append('attachment', files[0]);
+    }
+    requestBody.append('title_en', formData.englishTitle);
+    requestBody.append('title_hi', formData.hindiTitle);
+    requestBody.append('last_date_time', formData.lastDate);
+    requestBody.append('remarks', formData.remarks);
+    requestBody.append('department_section_id', elements.find((item) => item.name === selectedOption).id);
+    
+    try {
+      const res = await axios.post('http://localhost:8000/api/office-orders', requestBody,{
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      setOpenModal(true); // Open modal after successful submission
+    } catch (error) {
+      console.log("Something went wrong");
+      console.log(error.response.data.message);
+      // Handle error
+    }
+    setErrorMessage(''); 
 };
-
 const closeModal = () => {
   setOpenModal(false); // Close modal
 };
+
   return (
     <div className={classes.root}>
       <Typography variant="h4" gutterBottom>
@@ -163,38 +221,40 @@ const closeModal = () => {
         {errorMessage && (
           <Typography className={classes.errorText}>{errorMessage}</Typography>
         )}
-        {/* Form steps */}
+
         {step === 1 && (
           <div>
             <Typography variant="h6">Section/Department</Typography>
-            <FormControl fullWidth variant="outlined">
-              <InputLabel>Section</InputLabel>
-              <Select
-                label="Section"
-                name="section"
-                value={formData.section}
-                onChange={handleChange}
-                required
-              >
-                <MenuItem value="section1">Section 1</MenuItem>
-                <MenuItem value="section2">Section 2</MenuItem>
-                <MenuItem value="section3">Section 3</MenuItem>
-              </Select>
-            </FormControl>
-            <FormControl fullWidth variant="outlined">
-              <InputLabel>Department</InputLabel>
-              <Select
-                label="Department"
-                name="department"
-                value={formData.department}
-                onChange={handleChange}
-                required
-              >
-                <MenuItem value="department1">Department 1</MenuItem>
-                <MenuItem value="department2">Department 2</MenuItem>
-                <MenuItem value="department3">Department 3</MenuItem>
-              </Select>
-            </FormControl>
+            <FormControl fullWidth>
+          <InputLabel id="category-label">Category</InputLabel>
+          <Select
+            labelId="category-label"
+            id="category"
+            value={category}
+            label="Category"
+            onChange={handleCategoryChange}
+          >
+            <MenuItem value="section">Section</MenuItem>
+            <MenuItem value="department">Department</MenuItem>
+          </Select>
+        </FormControl>
+           <FormControl fullWidth>
+          <InputLabel id="option-label">Option</InputLabel>
+          <Select
+            labelId="option-label"
+            id="option"
+            value={selectedOption}
+            label="Option"
+            onChange={handleOptionChange}
+            disabled={options.length === 0}
+          >
+            {options.map((option, index) => (
+              <MenuItem key={index} value={option}>
+                {option}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
           </div>
         )}
         {step === 2 && (
@@ -232,15 +292,6 @@ const closeModal = () => {
               onChange={handleChange}
               required
             />
-            {/* <TextField
-              fullWidth
-              variant="outlined"
-              label="Office Order Year"
-              name="officeOrderYear"
-              value={formData.officeOrderYear}
-              onChange={handleChange}
-              required
-            /> */}
           </div>
         )}
         {step === 4 && (
@@ -272,7 +323,7 @@ const closeModal = () => {
                   </Select>
                 </FormControl>
                 {formData.attachmentType === 'upload' && (
-                  <UploadArea formData={formData} setFormData={setFormData} uploadedFiles={formData.attachmentFiles}/>
+                  <UploadArea files = {files} setFiles = {setFiles} setErrorMessage={setErrorMessage}/>
                 )}
                 {formData.attachmentType === 'link' && (
                   <TextField
@@ -306,7 +357,7 @@ const closeModal = () => {
         >
           <div className={classes.paper}>
             <Typography variant="h6" id="modal-title">
-              Submitted Successfully
+              Order Submitted Successfully
             </Typography>
             <Button variant="contained" color="primary" onClick={closeModal}>
               Close
@@ -337,3 +388,5 @@ const closeModal = () => {
 };
 
 export default OfficeOrders;
+
+
