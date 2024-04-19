@@ -64,6 +64,7 @@ const NoticesMain = () => {
   const [options, setOptions] = useState([]);
   const [elements, setElements] = useState([]); // State for options based on category
   const [selectedOption, setSelectedOption] = useState('');
+  const [dialogBoxData, setDialogBoxData] = useState(''); // State for dialog box data
 
   // State for selected option ID
   const [files, setFiles] = useState([]);
@@ -212,12 +213,27 @@ const handleOptionChange = (event) => {
           'Content-Type': 'multipart/form-data',
         },
       });
-      setOpenModal(true); // Open modal after successful submission
-    } catch (e) {
-      console.log(e.response.data.errors)
-      // console.log("Something went wrong");
-      // console.log(error.response.data.message);
-      // Handle error
+      setDialogBoxData("Notice Submitted Successfully");
+      setOpenModal(true);
+    }catch(e){
+      const err = e.response.data.errors;
+      // Check if the error object exists
+      if (err) {
+        // Loop through each key in the error object
+        Object.keys(err).forEach(key => {
+          // Check if the value corresponding to the key is an array
+          if (Array.isArray(err[key])) {
+            // Loop through each error message in the array
+            err[key].forEach(errorMessage => {
+              setDialogBoxData(errorMessage);
+            });
+          } else {
+            // If the value is not an array, log it directly
+            setDialogBoxData(err[key]);
+          }
+        });
+      }
+      setOpenModal(true);
     }
     setErrorMessage(''); 
 };
@@ -378,7 +394,7 @@ const closeModal = () => {
         >
           <div className={classes.paper}>
             <Typography variant="h6" id="modal-title">
-              Notice Submitted Successfully
+              {dialogBoxData}
             </Typography>
             <Button variant="contained" color="primary" onClick={closeModal}>
               Close
