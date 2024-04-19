@@ -10,6 +10,8 @@ import Paper from '@material-ui/core/Paper';
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
 
 const useStyles = makeStyles((theme) => ({
     table: {
@@ -34,6 +36,15 @@ const Component1 = () => {
     const classes = useStyles();
     const [open, setOpen] = useState(false);
     const [selectedPDF, setSelectedPDF] = useState(null);
+    const [editedData, setEditedData] = useState(null); // State to hold the currently edited row's data
+    const [formData, setFormData] = useState({
+        column1: '',
+        column2: '',
+        column3: '',
+        column4: '',
+        pdfFile: null, // State to hold the uploaded PDF file
+    });
+
     const sampleData = [
         { id: 1, column1: 'Data 1', column2: 'Data 2', column3: 'Data 3', column4: 'Data 4', pdfLink: 'https://example.com/pdf1', pdfUrl: 'https://example.com/pdf/sample1.pdf', timeUploaded: '2024-04-12T10:30:00', priority: true },
         { id: 2, column1: 'Data 5', column2: 'Data 6', column3: 'Data 7', column4: 'Data 8', pdfLink: 'https://example.com/pdf2', pdfUrl: 'https://example.com/pdf/sample2.pdf', timeUploaded: '2024-04-12T11:30:00', priority: false },
@@ -63,13 +74,52 @@ const Component1 = () => {
         }
     });
 
-    const handleOpen = (pdfUrl) => {
-        setSelectedPDF(pdfUrl);
-        setOpen(true);
+    const handleOpen = (rowData) => {
+        setEditedData(rowData); // Set the currently edited row's data
+        setFormData(rowData); // Populate form data with row data
+        setOpen(true); // Open the modal
     };
 
     const handleClose = () => {
         setOpen(false);
+    };
+
+    const handleChange = (e) => {
+        if (e.target.name === 'pdfFile') {
+            // Handle file upload
+            setFormData({ ...formData, pdfFile: e.target.files[0] }); // Update pdfFile state with the selected file
+        } else {
+            setFormData({ ...formData, [e.target.name]: e.target.value });
+        }
+    };
+
+    const handleSave = () => {
+        setOpen(false);
+        const formDataToSend = new FormData();
+        // Append form data to FormData object
+        formDataToSend.append('column1', formData.column1);
+        formDataToSend.append('column2', formData.column2);
+        formDataToSend.append('column3', formData.column3);
+        formDataToSend.append('column4', formData.column4);
+        formDataToSend.append('pdfFile', formData.pdfFile); // Append the uploaded PDF file
+
+        // Implement save functionality here
+        // Assuming you have an API endpoint for updating form data
+        // fetch('https://api.example.com/updateFormData', {
+        //     method: 'PUT',
+        //     body: formDataToSend,
+        // })
+        // .then(response => response.json())
+        // .then(data => {
+        //     console.log('Form data updated successfully:', data);
+        //     setOpen(false); // Close the modal after saving
+        // })
+        // .catch(error => {
+        //     console.error('Error updating form data:', error);
+        //     // Handle error
+        // });
+
+        console.log(formData);
     };
 
     return (
@@ -84,7 +134,7 @@ const Component1 = () => {
                             <TableCell align="right">English Notice Subject</TableCell>
                             <TableCell align="right">Display End date</TableCell>
                             <TableCell align="right">Link attached</TableCell>
-                            <TableCell align="right">PDF attached</TableCell>
+                            <TableCell align="right">Actions</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -100,7 +150,13 @@ const Component1 = () => {
                                     <a href={row.pdfLink}>PDF Link</a>
                                 </TableCell>
                                 <TableCell align="right">
-                                    <button onClick={() => handleOpen(row.pdfUrl)}>View PDF</button>
+                                    <Button 
+                                        variant="contained" 
+                                        color="primary" 
+                                        onClick={() => handleOpen(row)} // Pass the row data to handleEdit function
+                                    >
+                                        Edit
+                                    </Button>
                                 </TableCell>
                             </TableRow>
                         ))}
@@ -119,12 +175,47 @@ const Component1 = () => {
             >
                 <Fade in={open}>
                     <div className={classes.paper}>
-                        <iframe
-                            title="PDF Viewer"
-                            width="100%"
-                            height="100%"
-                            src={selectedPDF}
+                        {/* Display form fields with data of the currently edited row */}
+                        <TextField
+                            label="Column 1"
+                            name="column1"
+                            value={formData.column1}
+                            onChange={handleChange}
+                            fullWidth
+                            margin="normal"
                         />
+                        <TextField
+                            label="Column 2"
+                            name="column2"
+                            value={formData.column2}
+                            onChange={handleChange}
+                            fullWidth
+                            margin="normal"
+                        />
+                        <TextField
+                            label="Column 3"
+                            name="column3"
+                            value={formData.column3}
+                            onChange={handleChange}
+                            fullWidth
+                            margin="normal"
+                        />
+                        <TextField
+                            label="Column 4"
+                            name="column4"
+                            value={formData.column4}
+                            onChange={handleChange}
+                            fullWidth
+                            margin="normal"
+                        />
+                        <input
+                            type="file"
+                            accept="application/pdf"
+                            onChange={handleChange}
+                            name="pdfFile"
+                            style={{ marginBottom: '10px' }}
+                        />
+                        <Button variant="contained" color="primary" onClick={handleSave}>Save</Button>
                     </div>
                 </Fade>
             </Modal>

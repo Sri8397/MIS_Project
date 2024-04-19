@@ -29,6 +29,8 @@ class TenderController extends Controller
                 'last_date_time' => $tender->last_date_time,
                 'intender_email' => $tender->intender_email,
                 'remarks' => $tender->remarks,
+                'created_at' => $tender->created_at,
+                'updated_at' => $tender->updated_at,
             ];
 
             // If attachment is present, generate a clickable link for it
@@ -74,7 +76,7 @@ class TenderController extends Controller
         if ($request->hasFile('attachment')) {
             $file = $request->file('attachment');
             $fileName = uniqid() . '_' . $file->getClientOriginalName();
-            $path = $file->storeAs('tender_attachments', $fileName);
+            $path = $file->storeAs('pdfs/office-tenders', $fileName);
             $request['attachment'] = $path;
         }
 
@@ -100,6 +102,8 @@ class TenderController extends Controller
             'last_date_time' => $tender->last_date_time,
             'intender_email' => $tender->intender_email,
             'remarks' => $tender->remarks,
+            'created_at' => $tender->created_at,
+            'updated_at' => $tender->updated_at,
         ];
 
         // If attachment is present, generate a clickable link for it
@@ -154,7 +158,7 @@ class TenderController extends Controller
 
             $file = $request->file('attachment');
             $fileName = uniqid() . '_' . $file->getClientOriginalName();
-            $path = $file->storeAs('tender_attachments', $fileName);
+            $path = $file->storeAs('pdfs/tenders', $fileName);
             $request['attachment'] = $path;
         }
 

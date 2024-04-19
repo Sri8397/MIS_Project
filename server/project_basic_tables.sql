@@ -434,3 +434,18 @@ VALUES
     (1001, 'Construction', 'Construction of Building', 'इमारत निर्माण', '2024-05-01 12:00:00', 'example@example.com', 'example.pdf', 'https://example.com/example.pdf', 'Sample remarks for the tender.'),
     (1002, 'Infrastructure', 'Road Construction Project', 'सड़क निर्माण परियोजना', '2024-05-03 12:00:00', 'info@example.com', NULL, NULL, 'This tender is for the construction of roads.');
 
+
+CREATE TABLE notices (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title_en VARCHAR(255) NOT NULL,
+    title_hi VARCHAR(255) NOT NULL,
+    last_date_time DATETIME NOT NULL,
+    attachment VARCHAR(255),
+    attachment_link VARCHAR(255),
+    remarks TEXT,
+    department_section_id INT NOT NULL,
+    priority INT DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (department_section_id) REFERENCES department_sections(id)
+);
