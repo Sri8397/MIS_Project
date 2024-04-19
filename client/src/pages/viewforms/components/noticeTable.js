@@ -12,6 +12,15 @@ import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
+import FormControl from '@material-ui/core/FormControl'; // Add this import
+import InputLabel from '@material-ui/core/InputLabel'; // Add this import
+import Select from '@material-ui/core/Select'; // Add this import
+import MenuItem from '@material-ui/core/MenuItem'; // Add this import
+// import UploadArea from '../components/uploadArea';
+import UploadArea from '../../forms/components/uploadArea';
+
+
+import axios from "axios"
 
 const useStyles = makeStyles((theme) => ({
     table: {
@@ -35,15 +44,14 @@ const useStyles = makeStyles((theme) => ({
 const Component1 = () => {
     const classes = useStyles();
     const [open, setOpen] = useState(false);
+    const [data, setData] = useState([])
+    const [options, setOptions] = useState([]);
+    const [elements, setElements] = useState([])
+    const [errorMessage, setErrorMessage] = useState(''); // State for error message
     const [selectedPDF, setSelectedPDF] = useState(null);
     const [editedData, setEditedData] = useState(null); // State to hold the currently edited row's data
-    const [formData, setFormData] = useState({
-        column1: '',
-        column2: '',
-        column3: '',
-        column4: '',
-        pdfFile: null, // State to hold the uploaded PDF file
-    });
+    const [files, setFiles] = useState([]);
+    const [formData, setFormData] = useState({});
 
     const sampleData = [
         { id: 1, column1: 'Data 1', column2: 'Data 2', column3: 'Data 3', column4: 'Data 4', pdfLink: 'https://example.com/pdf1', pdfUrl: 'https://example.com/pdf/sample1.pdf', timeUploaded: '2024-04-12T10:30:00', priority: true },
@@ -54,19 +62,28 @@ const Component1 = () => {
     ];
 
     useEffect(() => {
-        // Fetch data from the API
-        // Replace the URL with your actual API endpoint
-        fetch('https://api.example.com/data')
-            .then((response) => response.json())
-            .then((data) => {
-                // Merge fetched data with sampleData if needed
-                // setData(data)
-            })
-            .catch((error) => console.error('Error fetching data:', error));
+
+        const fetchData = async () => {
+            try {
+                const res = await axios.get('http://localhost:8000/api/department-sections');
+                setElements(res.data.data);
+                const response = await axios.get('http://localhost:8000/api/notices');
+                const modifiedData = response.data.data.map(notice => {
+                    const type = res.data.data.find((item) => item.id === notice.department_section_id).type;
+                    const name = res.data.data.find((item) => item.id === notice.department_section_id).name;
+                    return { ...notice, department_type: type, department_name: name, }
+                });
+                setData(modifiedData);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        };
+
+        fetchData();
     }, []);
 
     // Sort sample data based on priority and then time uploaded
-    const sortedSampleData = sampleData.sort((a, b) => {
+    const sortedModifiedData = data.sort((a, b) => {
         if (a.priority !== b.priority) {
             return a.priority ? -1 : 1; // Sort by priority
         } else {
@@ -85,41 +102,54 @@ const Component1 = () => {
     };
 
     const handleChange = (e) => {
-        if (e.target.name === 'pdfFile') {
-            // Handle file upload
-            setFormData({ ...formData, pdfFile: e.target.files[0] }); // Update pdfFile state with the selected file
+        const { name, value, files } = e.target;
+        if (name === 'pdfFile') {
+            setFormData({ ...formData, [name]: files[0], attachmentType: 'pdf' });
         } else {
-            setFormData({ ...formData, [e.target.name]: e.target.value });
+            setFormData({ ...formData, [name]: value });
+        }
+
+
+        if (name === "department_type") {
+            const option = [];
+            elements.map((item) => {
+                if (item.type === value) option.push(item.name);
+            })
+            setOptions(option);
         }
     };
 
-    const handleSave = () => {
+    const handleSave = async () => {
         setOpen(false);
-        const formDataToSend = new FormData();
-        // Append form data to FormData object
-        formDataToSend.append('column1', formData.column1);
-        formDataToSend.append('column2', formData.column2);
-        formDataToSend.append('column3', formData.column3);
-        formDataToSend.append('column4', formData.column4);
-        formDataToSend.append('pdfFile', formData.pdfFile); // Append the uploaded PDF file
+        console.log({ formData });
+        const requestBody = new FormData();
+        if (formData.attachmentType === 'link') {
+            requestBody.append('attachment_link', formData.attachment_link);
+        } else if (formData.attachmentType === 'pdf') {
+            requestBody.append('attachment', files[0]);
+        }
+        requestBody.append('title_en', formData.title_en);
+        requestBody.append('title_hi', formData.title_hi);
+        requestBody.append('last_date_time', formData.last_date_time);
+        requestBody.append('remarks', formData.remarks);
+        requestBody.append('department_section_id', elements.find((item) => item.name === formData.department_name).id);
+        requestBody.append('priority', formData.priority);
+        console.log(requestBody.forEach((item) => console.log(item)));
+        try {
+            const res = await axios.put(`http://localhost:8000/api/notices/${formData.id}`, requestBody, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            }); console.log("res", res);
 
-        // Implement save functionality here
-        // Assuming you have an API endpoint for updating form data
-        // fetch('https://api.example.com/updateFormData', {
-        //     method: 'PUT',
-        //     body: formDataToSend,
-        // })
-        // .then(response => response.json())
-        // .then(data => {
-        //     console.log('Form data updated successfully:', data);
-        //     setOpen(false); // Close the modal after saving
-        // })
-        // .catch(error => {
-        //     console.error('Error updating form data:', error);
-        //     // Handle error
-        // });
+        } catch (e) {
+            console.log(e)
+            // console.log("Something went wrong");
+            // console.log(error.response.data.message);
+            // Handle error
+        }
+        setErrorMessage('');
 
-        console.log(formData);
     };
 
     return (
@@ -129,30 +159,34 @@ const Component1 = () => {
                 <Table className={classes.table} aria-label="simple table">
                     <TableHead>
                         <TableRow>
-                            <TableCell>Section Dean Department</TableCell>
-                            <TableCell align="right">Section Dean Department</TableCell>
+                            <TableCell>Section/Dept</TableCell>
+                            <TableCell align="right">Section/Dept Name</TableCell>
                             <TableCell align="right">English Notice Subject</TableCell>
+                            <TableCell align="right">Hindi Notice Subject</TableCell>
                             <TableCell align="right">Display End date</TableCell>
+                            <TableCell align="right">Remarks</TableCell>
                             <TableCell align="right">Link attached</TableCell>
                             <TableCell align="right">Actions</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {sortedSampleData.map((row) => (
-                            <TableRow key={row.id}>
+                        {sortedModifiedData.map((row) => (
+                            <TableRow key={row.department_section_id}>
                                 <TableCell component="th" scope="row">
-                                    {row.column1}
+                                    {row.department_type}
                                 </TableCell>
-                                <TableCell align="right">{row.column2}</TableCell>
-                                <TableCell align="right">{row.column3}</TableCell>
-                                <TableCell align="right">{row.column4}</TableCell>
+                                <TableCell align="right">{row.department_name}</TableCell>
+                                <TableCell align="right">{row.title_en}</TableCell>
+                                <TableCell align="right">{row.title_hi}</TableCell>
+                                <TableCell align="right">{row.last_date_time}</TableCell>
+                                <TableCell align="right">{row.remarks}</TableCell>
                                 <TableCell align="right">
-                                    <a href={row.pdfLink}>PDF Link</a>
+                                    <a href={row.attachment_link}>PDF Link</a>
                                 </TableCell>
                                 <TableCell align="right">
-                                    <Button 
-                                        variant="contained" 
-                                        color="primary" 
+                                    <Button
+                                        variant="contained"
+                                        color="primary"
                                         onClick={() => handleOpen(row)} // Pass the row data to handleEdit function
                                     >
                                         Edit
@@ -175,50 +209,91 @@ const Component1 = () => {
             >
                 <Fade in={open}>
                     <div className={classes.paper}>
-                        {/* Display form fields with data of the currently edited row */}
+                        <FormControl fullWidth margin="normal">
+                            <InputLabel>Section/Department</InputLabel>
+                            <Select
+                                name="department_type"
+                                value={formData.department_type || ''}
+                                onChange={handleChange}
+                            >
+                                <MenuItem value="section">Section</MenuItem>
+                                <MenuItem value="department">Department</MenuItem>
+                            </Select>
+                        </FormControl>
+                        <FormControl fullWidth margin="normal">
+                            <InputLabel>Section/Dean Name</InputLabel>
+                            <Select
+                                name="department_name"
+                                value={formData.department_name}
+                                onChange={handleChange}
+                            >
+                                {options.map((item, index) => (<MenuItem value={item}>{item}</MenuItem>))}
+                            </Select>
+                        </FormControl>
                         <TextField
-                            label="Column 1"
-                            name="column1"
-                            value={formData.column1}
+                            label="English Notice Subject"
+                            name="title_en"
+                            value={formData.title_en || ''}
                             onChange={handleChange}
                             fullWidth
                             margin="normal"
                         />
                         <TextField
-                            label="Column 2"
-                            name="column2"
-                            value={formData.column2}
+                            label="Hindi Notice Subject"
+                            name="title_hi"
+                            value={formData.title_hi || ''}
                             onChange={handleChange}
                             fullWidth
                             margin="normal"
                         />
                         <TextField
-                            label="Column 3"
-                            name="column3"
-                            value={formData.column3}
+                            type="datetime-local"
+                            label="Display End date"
+                            name="last_date_time"
+                            value={formData.last_date_time || ''}
                             onChange={handleChange}
                             fullWidth
                             margin="normal"
                         />
                         <TextField
-                            label="Column 4"
-                            name="column4"
-                            value={formData.column4}
+                            label="Remarks"
+                            name="remarks"
+                            value={formData.remarks || ''}
                             onChange={handleChange}
                             fullWidth
                             margin="normal"
                         />
-                        <input
-                            type="file"
-                            accept="application/pdf"
-                            onChange={handleChange}
-                            name="pdfFile"
-                            style={{ marginBottom: '10px' }}
-                        />
+                        <FormControl fullWidth margin="normal">
+                            <InputLabel>Attachment</InputLabel>
+                            <Select
+                                name="attachmentType"
+                                value={formData.attachmentType || 'none'}
+                                onChange={handleChange}
+                            >
+                                <MenuItem value="none">None</MenuItem>
+                                <MenuItem value="link">Link</MenuItem>
+                                <MenuItem value="pdf">PDF</MenuItem>
+                            </Select>
+                        </FormControl>
+                        {formData.attachmentType === 'link' && (
+                            <TextField
+                                label="Attachment_link"
+                                name="attachment_link"
+                                value={formData.attachment_link || ''}
+                                onChange={handleChange}
+                                fullWidth
+                                margin="normal"
+                            />
+                        )}
+                        {formData.attachmentType === 'pdf' && (
+                            <UploadArea files={files} setFiles={setFiles} setErrorMessage={setErrorMessage} />
+                        )}
                         <Button variant="contained" color="primary" onClick={handleSave}>Save</Button>
                     </div>
                 </Fade>
             </Modal>
+
+
         </div>
     );
 };
