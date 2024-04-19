@@ -425,10 +425,7 @@ CREATE TABLE notices (
     FOREIGN KEY (department_section_id) REFERENCES department_sections(id)
 );
 
-<<<<<<< HEAD
-=======
 
->>>>>>> de88dd063c217def0843d994f2dc9df02aa149b8
 CREATE TABLE categories (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
@@ -465,9 +462,6 @@ CREATE TABLE tenders (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (category_id) REFERENCES categories(id)
-<<<<<<< HEAD
-);
-=======
 );
 
 -- Insert sample data into the tenders table
@@ -483,4 +477,3 @@ INSERT INTO tenders (tender_number, category_id, brief_description_en, brief_des
 (443322, 3, 'Sample Tender Description in English 9', 'Sample Tender Description in Hindi 9', '2024-06-25 23:59:59', 'example9@example.com', 'Sample remarks for Tender 9', 'https://example.com/attachment9.pdf'),
 (778899, 1, 'Sample Tender Description in English 10', 'Sample Tender Description in Hindi 10', '2024-06-30 23:59:59', 'example10@example.com', 'Sample remarks for Tender 10', 'https://example.com/attachment10.pdf');
 
->>>>>>> de88dd063c217def0843d994f2dc9df02aa149b8
