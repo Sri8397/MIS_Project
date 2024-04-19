@@ -68,7 +68,7 @@ class TenderController extends Controller
             return response()->json([
                 'status' => 422,
                 'errors' => $validator->messages(),
-                'message' => 'Either file is not uploaded or file is not pdf or file size is greater than 2MB.',
+                'message' => 'validation failed',
             ], 422);
         }
 
@@ -145,7 +145,7 @@ class TenderController extends Controller
             return response()->json([
                 'status' => 422,
                 'errors' => $validator->messages(),
-                'message' => 'Either file is not uploaded or file is not pdf or file size is greater than 2MB.',
+                'message' => 'validation failed',
             ], 422);
         }
 

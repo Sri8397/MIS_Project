@@ -210,6 +210,7 @@ const handleOptionChange = (event) => {
           'Content-Type': 'multipart/form-data',
         },
       });
+<<<<<<< HEAD
       setDialogBoxData("Order Submitted Successfully");
       setOpenModal(true);
     }catch(e){
@@ -231,6 +232,13 @@ const handleOptionChange = (event) => {
         });
       }
       setOpenModal(true);
+=======
+      setOpenModal(true); // Open modal after successful submission
+    } catch (error) {
+      console.log("Something went wrong");
+      console.log(error);
+      // Handle error
+>>>>>>> de88dd063c217def0843d994f2dc9df02aa149b8
     }
     setErrorMessage(''); 
 };
