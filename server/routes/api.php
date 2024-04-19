@@ -55,6 +55,14 @@ Route::prefix('uploads')->middleware('auth.check')->group(function () {
 });
 
 
+use App\Http\Controllers\CategoryController;
+
+Route::get('categories', [CategoryController::class, 'index']);
+Route::post('categories', [CategoryController::class, 'store']);
+Route::get('categories/{id}', [CategoryController::class, 'show']);
+
+
+
 
 Route::get('department-sections', [DepartmentSectionController::class, 'index']);
 Route::post('department-sections', [DepartmentSectionController::class, 'store']);
