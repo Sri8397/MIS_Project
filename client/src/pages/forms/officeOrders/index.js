@@ -159,9 +159,18 @@ const handleOptionChange = (event) => {
       setErrorMessage('Please fill in all required fields.');
       return;
     }
-    if (step === 3 && !formData.lastDate) {
+    if (step === 3) {
+      if (!formData.lastDate) {
       setErrorMessage('Please fill in all required fields.');
       return;
+      }else{
+        console.log(formData.lastDate)
+        const selectedDate = new Date(formData.lastDate);
+        if (selectedDate < new Date()) {
+          setErrorMessage('Please select a future date.');
+          return;
+        }
+      }
     }
     
     setErrorMessage(''); // Clear error message

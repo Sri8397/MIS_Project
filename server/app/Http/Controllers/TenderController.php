@@ -176,7 +176,7 @@ class TenderController extends Controller
         }
 
         // Delete the attached file, if any
-        if ($tender->attachment_link) {
+        if ($tender->attachment) {
             Storage::delete($tender->attachment);
         }
 
