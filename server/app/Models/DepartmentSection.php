@@ -11,9 +11,4 @@ class DepartmentSection extends Model
         'type', // department or section
         'name',
     ];
-
-    public function officeOrders()
-    {
-        return $this->hasMany(OfficeOrder::class);
-    }
 }
