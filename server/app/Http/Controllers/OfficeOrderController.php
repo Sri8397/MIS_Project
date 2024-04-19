@@ -14,7 +14,7 @@ class OfficeOrderController extends Controller
 {
 
     use PDFControllerTrait;
-
+    
     public function index()
     {
         $officeOrders = OfficeOrder::all();
@@ -29,6 +29,8 @@ class OfficeOrderController extends Controller
                 'last_date_time' => $officeOrder->last_date_time,
                 'remarks' => $officeOrder->remarks,
                 'department_section_id' => $officeOrder->department_section_id,
+                'created_at' => $officeOrder->created_at,
+                'updated_at' => $officeOrder->updated_at,
             ];
 
             // If attachment is present, generate a clickable link for it
@@ -43,6 +45,38 @@ class OfficeOrderController extends Controller
 
         return response()->json(['data' => $officeOrdersData], 200);
     }
+
+
+    public function show($id)
+    {
+        $officeOrder = OfficeOrder::find($id);
+
+        if (!$officeOrder) {
+            return response()->json(['error' => 'Office order not found'], 404);
+        }
+
+        $data = [
+            'id' => $officeOrder->id,
+            'title_en' => $officeOrder->title_en,
+            'title_hi' => $officeOrder->title_hi,
+            'last_date_time' => $officeOrder->last_date_time,
+            'remarks' => $officeOrder->remarks,
+            'department_section_id' => $officeOrder->department_section_id,
+            'created_at' => $officeOrder->created_at,
+            'updated_at' => $officeOrder->updated_at,
+        ];
+
+        // If attachment is present, generate a clickable link for it
+        if ($officeOrder->attachment) {
+            $data['attachment_link'] = route('office-orders.pdf', ['id' => $officeOrder->id]);
+        } else if ($officeOrder->attachment_link) {
+            $data['attachment_link'] = $officeOrder->attachment_link;
+        }
+
+        return response()->json(['data' => $data], 200);
+    }
+
+
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -75,7 +109,7 @@ class OfficeOrderController extends Controller
         if ($request->hasFile('attachment')) {
             $file = $request->file('attachment');
             $fileName = uniqid() . '_' . $file->getClientOriginalName();
-            $path = $file->storeAs('pdfs', $fileName);
+            $path = $file->storeAs('pdfs/office-orders', $fileName);
             $validatedData['attachment'] = $path;
         }
 
@@ -84,32 +118,6 @@ class OfficeOrderController extends Controller
         return response()->json(['message' => 'Office order created successfully', 'data' => $officeOrder], 201);
     }
 
-    public function show($id)
-    {
-        $officeOrder = OfficeOrder::find($id);
-
-        if (!$officeOrder) {
-            return response()->json(['error' => 'Office order not found'], 404);
-        }
-
-        $data = [
-            'id' => $officeOrder->id,
-            'title_en' => $officeOrder->title_en,
-            'title_hi' => $officeOrder->title_hi,
-            'last_date_time' => $officeOrder->last_date_time,
-            'remarks' => $officeOrder->remarks,
-            'department_section_id' => $officeOrder->department_section_id
-        ];
-
-        // If attachment is present, generate a clickable link for it
-        if ($officeOrder->attachment) {
-            $data['attachment_link'] = route('office-orders.pdf', ['id' => $officeOrder->id]);
-        } else if ($officeOrder->attachment_link) {
-            $data['attachment_link'] = $officeOrder->attachment_link;
-        }
-
-        return response()->json(['data' => $data], 200);
-    }
 
     public function update(Request $request, $id)
     {
@@ -149,7 +157,7 @@ class OfficeOrderController extends Controller
 
             $file = $request->file('attachment');
             $fileName = uniqid() . '_' . $file->getClientOriginalName();
-            $path = $file->storeAs('pdfs', $fileName);
+            $path = $file->storeAs('pdfs/office-orders', $fileName);
             $validatedData['attachment'] = $path;
         }
 
