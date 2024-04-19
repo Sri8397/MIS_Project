@@ -72,7 +72,7 @@ Route::get('department-sections/{id}', [DepartmentSectionController::class, 'sho
 Route::get('office-orders', [OfficeOrderController::class, 'index']);
 Route::post('office-orders', [OfficeOrderController::class, 'store']);
 Route::get('office-orders/{id}', [OfficeOrderController::class, 'show']);
-Route::put('office-orders/{id}', [OfficeOrderController::class, 'update']);
+Route::post('office-orders/{id}', [OfficeOrderController::class, 'update']);
 Route::delete('office-orders/{id}', [OfficeOrderController::class, 'destroy']);
 
 // Office Order PDF Route
@@ -86,7 +86,7 @@ Route::get('office-orders/{id}/pdf', function ($id) {
 Route::get('tenders', [TenderController::class, 'index']);
 Route::post('tenders', [TenderController::class, 'store']);
 Route::get('tenders/{id}', [TenderController::class, 'show']);
-Route::put('tenders/{id}', [TenderController::class, 'update']);
+Route::post('tenders/{id}', [TenderController::class, 'update']);
 Route::delete('tenders/{id}', [TenderController::class, 'destroy']);
 
 // Tender PDF Route
@@ -99,7 +99,7 @@ Route::get('tenders/{id}/pdf', function ($id) {
 Route::get('notices', [NoticeController::class, 'index']);
 Route::post('notices', [NoticeController::class, 'store']);
 Route::get('notices/{id}', [NoticeController::class, 'show']);
-Route::put('notices/{id}', [NoticeController::class, 'update']);
+Route::post('notices/{id}', [NoticeController::class, 'update']);
 Route::delete('notices/{id}', [NoticeController::class, 'destroy']);
 // Route::get('notices/{id}/pdf', [NoticeController::class, 'servePDF'])->name('notices.pdf');
 
@@ -112,5 +112,5 @@ Route::get('notices/{id}/pdf', function ($id) {
 
 
 // here add routes Module wise
-include('adminRoutes.php');
-include('userRoutes.php');
+include ('adminRoutes.php');
+include ('userRoutes.php');
