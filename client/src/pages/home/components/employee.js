@@ -13,7 +13,6 @@ const Employee = () => {
                     <CardHeader title='Thesis Management System 🚀'></CardHeader>
                     <CardContent>
                         <Typography sx={{ mb: 2 }}>Welcome to Thesis Management System (IIT(ISM)).</Typography>
-                      
                     </CardContent>
                 </Card>
             </Grid>

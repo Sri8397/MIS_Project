@@ -196,7 +196,6 @@ class AuthController extends ControllerAPI
         $user = Auth::user();
         $user_id = $user->id;
         $success['user_menu_details'] = $menus = $this->getUserMenu($user_id);
-
         //   print_r($menus);
         $main_menu = array();
         $master_menu = array();
@@ -206,8 +205,6 @@ class AuthController extends ControllerAPI
         array_push($master_menu, array("title" => 'Edit Form', "path" => '/editforms'));
         
         foreach ($menus as $key => $value) {
-            // print_r($value);
-            // exit;
             if ($value) {
                 foreach ($value as $k => $v) {
                     //  print_r($value);

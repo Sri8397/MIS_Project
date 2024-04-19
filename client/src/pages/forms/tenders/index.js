@@ -182,14 +182,14 @@ const TendersMain = () => {
           'Content-Type': 'multipart/form-data'
         }
         });
-      
+      console.log(res);
       setOpenModal(true);
     }catch(e){
       // const error = e.response.data.errors;
       // error.map((err) => {
       //   console.log(err)
       // })
-      console.log(error.response.data.message);
+      console.log(e);
       
     }
     // Implement form submission logic here
