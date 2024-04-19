@@ -393,3 +393,41 @@ CREATE TABLE notices (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (department_section_id) REFERENCES department_sections(id)
 );
+
+CREATE TABLE categories (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    description TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+INSERT INTO categories (name, description, created_at, updated_at)
+VALUES 
+    ('Electronics', 'Includes electronic devices and accessories', NOW(), NOW()),
+    ('Fashion', 'Includes clothing, footwear, and accessories', NOW(), NOW()),
+    ('Home & Garden', 'Includes furniture, appliances, and decor', NOW(), NOW()),
+    ('Books & Media', 'Includes books, movies, and music', NOW(), NOW()),
+    ('Sports & Outdoors', 'Includes sporting goods and outdoor equipment', NOW(), NOW()),
+    ('Health & Beauty', 'Includes skincare, makeup, and wellness products', NOW(), NOW()),
+    ('Toys & Games', 'Includes toys, puzzles, and games for all ages', NOW(), NOW()),
+    ('Automotive', 'Includes automotive parts and accessories', NOW(), NOW()),
+    ('Food & Groceries', 'Includes food items and groceries', NOW(), NOW()),
+    ('Pets & Animals', 'Includes pet supplies and accessories', NOW(), NOW());
+
+
+-- Create the tenders table
+CREATE TABLE tenders (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    tender_number INT NOT NULL,
+    category_id INT NOT NULL,
+    brief_description_en VARCHAR(255) NOT NULL,
+    brief_description_hi VARCHAR(255) NOT NULL,
+    last_date_time DATETIME NOT NULL,
+    intender_email VARCHAR(255) NOT NULL,
+    remarks TEXT,
+    attachment_link VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (category_id) REFERENCES categories(id)
+);
