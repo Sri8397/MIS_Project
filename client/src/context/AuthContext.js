@@ -74,7 +74,6 @@ const AuthProvider = ({ children }) => {
             setLoading(false)
             // setUser({ ...response.data.userData })
             if (response.data.status === true) {
-             
               setUser({ ...response.data.data.user_details })
               setUserMenu({ ...response.data.data.user_menu_details })
               setSession({ ...response.data.data.session })

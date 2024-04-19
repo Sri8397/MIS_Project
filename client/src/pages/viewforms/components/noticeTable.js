@@ -136,7 +136,7 @@ const Component1 = () => {
         requestBody.append('priority', formData.priority);
         console.log(requestBody.forEach((item) => console.log(item)));
         try {
-            const res = await axios.put(`http://localhost:8000/api/notices/${formData.id}`, requestBody, {
+            const res = await axios.post(`http://localhost:8000/api/notices/${formData.id}`, requestBody, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },

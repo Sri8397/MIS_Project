@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
   Typography,
@@ -76,14 +76,20 @@ const TendersMain = () => {
   const [openModal, setOpenModal] = useState(false);
   const [files, setFiles] = useState([]); // State for uploaded files
   const [availableCategories, setAvailableCategories] = useState([]); 
+  const [dialogBoxData, setDialogBoxData] = useState('') 
   
-  // useEffect(() => {
-  //     const fetchAvailableCategories = async () => {
-  //       try{
-  //         const categories = 
-  //       }
-  //     }
-  //   ,[]})
+  useEffect(() => {
+      const fetchAvailableCategories = async () => {
+        try{
+          const categories = await axios.get('http://localhost:8000/api/categories');
+          setAvailableCategories(categories.data.data);
+          console.log(availableCategories);
+        }catch(e){
+          console.log(e);
+        }
+      }
+      fetchAvailableCategories()
+  }, [])
 
   const handleChange = (e) => {
     const { name, value, checked } = e.target;
@@ -168,29 +174,43 @@ const TendersMain = () => {
     } else if (formData.attachmentType === 'upload') {
       requestBody.append('attachment', files[0]);
     }
+    ;
     requestBody.append('tender_number', formData.tenderNumber);
-    requestBody.append('category', formData.category);
+    requestBody.append('category_id', formData.category);
     requestBody.append('brief_description_en', formData.englishDesc);
     requestBody.append('brief_description_hi', formData.hindiDesc);
     requestBody.append('last_date_time', formData.lastDate);
     requestBody.append('intender_email', formData.indenterMail);
     requestBody.append('remarks', formData.remarks);
+    
 
     try{
-      const res = axios.post('http://localhost:8000/api/tenders', requestBody, {
+      const res = await axios.post('http://localhost:8000/api/tenders', requestBody, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
         });
-      
+      setDialogBoxData("Tender Submitted Successfully");
       setOpenModal(true);
     }catch(e){
-      // const error = e.response.data.errors;
-      // error.map((err) => {
-      //   console.log(err)
-      // })
-      console.log(error.response.data.message);
-      
+      const err = e.response.data.errors;
+      // Check if the error object exists
+      if (err) {
+        // Loop through each key in the error object
+        Object.keys(err).forEach(key => {
+          // Check if the value corresponding to the key is an array
+          if (Array.isArray(err[key])) {
+            // Loop through each error message in the array
+            err[key].forEach(errorMessage => {
+              setDialogBoxData(errorMessage);
+            });
+          } else {
+            // If the value is not an array, log it directly
+            setDialogBoxData(err[key]);
+          }
+        });
+      }
+      setOpenModal(true);
     }
     // Implement form submission logic here
     setErrorMessage(''); // Clear error message
@@ -231,9 +251,11 @@ const closeModal = () => {
                 onChange={handleChange}
                 required
               >
-                <MenuItem value="department1">Category 1</MenuItem>
-                <MenuItem value="department2">Category 2</MenuItem>
-                <MenuItem value="department3">Category 3</MenuItem>
+               {Array.isArray(availableCategories) && availableCategories.map((category) => (
+      <MenuItem key={category.id} value={category.id}>
+        {category.name}
+      </MenuItem>
+    ))}
               </Select>
             </FormControl>
           </div>
@@ -353,7 +375,7 @@ const closeModal = () => {
         >
           <div className={classes.paper}>
             <Typography variant="h6" id="modal-title">
-              Tender Submitted Successfully
+              {dialogBoxData}
             </Typography>
             <Button variant="contained" color="primary" onClick={closeModal}>
               Close

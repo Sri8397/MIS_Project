@@ -142,6 +142,8 @@ class NoticeController extends Controller
         // Handle file upload
         if ($request->hasFile('attachment')) {
             // Delete previous attachment if exists
+            echo "Previous attachment exits: " . $notice->attachment . PHP_EOL;
+
             if ($notice->attachment) {
                 Storage::delete($notice->attachment);
             }
