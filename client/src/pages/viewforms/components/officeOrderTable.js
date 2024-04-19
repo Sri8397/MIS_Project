@@ -10,6 +10,8 @@ import Paper from '@material-ui/core/Paper';
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
+import axios from 'axios';
+
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -35,30 +37,36 @@ const Component1 = () => {
   const [data, setData] = useState([]);
   const [open, setOpen] = useState(false);
   const [selectedPDF, setSelectedPDF] = useState(null);
-  const sampleData = [
-    { id: 1, column1: 'Data 1', column2: 'Data 2', column3: 'Data 3', column4: 'Data 4', pdfLink: 'https://example.com/pdf1', pdfUrl: 'https://example.com/pdf/sample1.pdf' },
-    { id: 2, column1: 'Data 5', column2: 'Data 6', column3: 'Data 7', column4: 'Data 8', pdfLink: 'https://example.com/pdf2', pdfUrl: 'https://example.com/pdf/sample2.pdf' },
-    { id: 3, column1: 'Data 9', column2: 'Data 10', column3: 'Data 11', column4: 'Data 12', pdfLink: 'https://example.com/pdf3', pdfUrl: 'https://example.com/pdf/sample3.pdf' },
-    { id: 4, column1: 'Data 13', column2: 'Data 14', column3: 'Data 15', column4: 'Data 16', pdfLink: 'https://example.com/pdf4', pdfUrl: 'https://example.com/pdf/sample4.pdf' },
-    { id: 5, column1: 'Data 17', column2: 'Data 18', column3: 'Data 19', column4: 'Data 20', pdfLink: 'https://example.com/pdf5', pdfUrl: 'https://example.com/pdf/sample5.pdf' },
-  ];
+  // const sampleData = [
+  //   { id: 1, column1: 'Data 1', column2: 'Data 2', column3: 'Data 3', column4: 'Data 4', pdfLink: 'https://example.com/pdf1', pdfUrl: 'https://example.com/pdf/sample1.pdf' },
+  //   { id: 2, column1: 'Data 5', column2: 'Data 6', column3: 'Data 7', column4: 'Data 8', pdfLink: 'https://example.com/pdf2', pdfUrl: 'https://example.com/pdf/sample2.pdf' },
+  //   { id: 3, column1: 'Data 9', column2: 'Data 10', column3: 'Data 11', column4: 'Data 12', pdfLink: 'https://example.com/pdf3', pdfUrl: 'https://example.com/pdf/sample3.pdf' },
+  //   { id: 4, column1: 'Data 13', column2: 'Data 14', column3: 'Data 15', column4: 'Data 16', pdfLink: 'https://example.com/pdf4', pdfUrl: 'https://example.com/pdf/sample4.pdf' },
+  //   { id: 5, column1: 'Data 17', column2: 'Data 18', column3: 'Data 19', column4: 'Data 20', pdfLink: 'https://example.com/pdf5', pdfUrl: 'https://example.com/pdf/sample5.pdf' },
+  // ];
 
   useEffect(() => {
-    // Fetch data from the API
-    // Replace the URL with your actual API endpoint
-    fetch('https://api.example.com/data')
-      .then((response) => response.json())
-      .then((data) => setData(data))
-      .catch((error) => console.error('Error fetching data:', error));
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/api/office-orders');
+        console.log({response})
+        console.log(response.data);
+        setData(response.data.data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
   }, []);
 
-  const sortedSampleData = sampleData.sort((a, b) => {
-    if (a.priority !== b.priority) {
-      return a.priority ? -1 : 1; // Sort by priority
-    } else {
-      return new Date(a.timeUploaded) - new Date(b.timeUploaded); // If priority is the same, sort by time uploaded
-    }
-  });
+  // const sortedSampleData = sampleData.sort((a, b) => {
+  //   if (a.priority !== b.priority) {
+  //     return a.priority ? -1 : 1; // Sort by priority
+  //   } else {
+  //     return new Date(a.timeUploaded) - new Date(b.timeUploaded); // If priority is the same, sort by time uploaded
+  //   }
+  // });
 
   const handleOpen = (pdfUrl) => {
     setSelectedPDF(pdfUrl);
@@ -80,27 +88,27 @@ const Component1 = () => {
               <TableCell align="right">Dean</TableCell>
               <TableCell align="right">Subject English</TableCell>
               <TableCell align="right">Subject Hindi</TableCell>
-              <TableCell align="right">Year</TableCell>
               <TableCell align="right">End Date</TableCell>
               <TableCell align="right">Link</TableCell>
               <TableCell align="right">Pdf</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {sortedSampleData.map((row) => (
+            {data.map((row) => (
               <TableRow key={row.id}>
                 <TableCell component="th" scope="row">
-                  {row.column1}
+                  {row.id}
                 </TableCell>
-                <TableCell align="right">{row.column2}</TableCell>
-                <TableCell align="right">{row.column3}</TableCell>
-                <TableCell align="right">{row.column4}</TableCell>
+                <TableCell align="right">{row.department_section_id}</TableCell>
+                <TableCell align="right">{row.title_en}</TableCell>
+                <TableCell align="right">{row.title_hi}</TableCell>
+                <TableCell align="right">{row.last_date_time}</TableCell>
                 <TableCell align="right">
-                  <a href={row.pdfLink}>PDF Link</a>
+                  <a href={row.attachment_link}>PDF Link</a>
                 </TableCell>
-                <TableCell align="right">
+                {/* <TableCell align="right">
                   <button onClick={() => handleOpen(row.pdfUrl)}>View PDF</button>
-                </TableCell>
+                </TableCell> */}
               </TableRow>
             ))}
           </TableBody>

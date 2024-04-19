@@ -203,7 +203,7 @@ const handleOptionChange = (event) => {
       setOpenModal(true); // Open modal after successful submission
     } catch (error) {
       console.log("Something went wrong");
-      console.log(error.response.data.message);
+      console.log(error);
       // Handle error
     }
     setErrorMessage(''); 
