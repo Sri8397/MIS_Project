@@ -268,7 +268,7 @@ CREATE TABLE IF NOT EXISTS `users` (
 -- Dumping data for table project.users: ~1 rows (approximately)
 DELETE FROM `users`;
 INSERT INTO `users` (`id`, `password`, `ci_password`, `auth_id`, `created_date`, `updated_date`, `user_hash`, `failed_attempt_cnt`, `success_attempt_cnt`, `is_blocked`, `status`, `remark`) VALUES
-	('1800', '$2y$10$OQAewjiBNjOml.RUQBpXx.BrsHnTDqPYpyIsvH4P8o4rrB7Y134.2', '8cc30530e786765a266ad6d7207084d8', 'emp', '2024-01-04 17:50:56', '2024-03-12 14:50:06', 'NoVOLyeLV9', 0, 0, 0, 'A', '');
+	('1594', '$2y$10$OQAewjiBNjOml.RUQBpXx.BrsHnTDqPYpyIsvH4P8o4rrB7Y134.2', '8cc30530e786765a266ad6d7207084d8', 'emp', '2024-01-04 17:50:56', '2024-03-12 14:50:06', 'NoVOLyeLV9', 0, 0, 0, 'A', '');
 
 -- Dumping structure for table project.user_auth_types
 CREATE TABLE IF NOT EXISTS `user_auth_types` (
@@ -359,16 +359,93 @@ INSERT INTO `user_login_attempts` (`id`, `time`, `password`, `status`, `ip`) VAL
 /*!40111 SET SQL_NOTES=IFNULL(@OLD_SQL_NOTES, 1) */;
 
 
-CREATE TABLE IF NOT EXISTS `uploads` (
-  `id` char(26),
-  `user_id` varchar(20) NOT NULL,
-  `name` varchar(255) NOT NULL, 
-  `original_name` varchar(255) NOT NULL, 
-  `file_path` varchar(255) NOT NULL, 
-  `size` bigint(20) unsigned NOT NULL, 
-  created_at timestamp, 
-  updated_at timestamp, 
-  PRIMARY KEY (`id`),
-  KEY `user_id` (`user_id`),
-  CONSTRAINT `uploads_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+-- CREATE TABLE IF NOT EXISTS `uploads` (
+--   `id` char(26),
+--   `user_id` varchar(20) NOT NULL,
+--   `name` varchar(255) NOT NULL, 
+--   `original_name` varchar(255) NOT NULL, 
+--   `file_path` varchar(255) NOT NULL, 
+--   `size` bigint(20) unsigned NOT NULL, 
+--   created_at timestamp, 
+--   updated_at timestamp, 
+--   PRIMARY KEY (`id`),
+--   KEY `user_id` (`user_id`),
+--   CONSTRAINT `uploads_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+-- ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+
+-- Create department_sections table
+CREATE TABLE department_sections (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    type ENUM('department', 'section') NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- Create office_orders table
+CREATE TABLE office_orders (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title_en VARCHAR(255) NOT NULL,
+    title_hi VARCHAR(255) NOT NULL,
+    last_date_time DATETIME NOT NULL,
+    attachment VARCHAR(255),
+    attachment_link VARCHAR(255),
+    remarks TEXT,
+    department_section_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (department_section_id) REFERENCES department_sections(id)
+);
+
+-- Insert sample data into department_sections
+INSERT INTO department_sections (type, name) VALUES
+('department', 'Human Resources'),
+('department', 'Finance'),
+('section', 'Sales'),
+('section', 'Marketing');
+
+-- Insert sample data into office_orders
+INSERT INTO office_orders (title_en, title_hi, last_date_time, department_section_id) VALUES
+('Office Order 1 English Title', 'Office Order 1 Hindi Title', '2024-04-20 09:00:00', 1),
+('Office Order 2 English Title', 'Office Order 2 Hindi Title', '2024-04-22 10:00:00', 3),
+('Office Order 3 English Title', 'Office Order 3 Hindi Title', '2024-04-25 12:00:00', 2);
+
+
+-- Create table for tenders
+CREATE TABLE tenders (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    tender_number INT NOT NULL,
+    category VARCHAR(255) NOT NULL,
+    brief_description_en VARCHAR(255) NOT NULL,
+    brief_description_hi VARCHAR(255) NOT NULL,
+    last_date_time DATETIME NOT NULL,
+    intender_email VARCHAR(255) NOT NULL,
+    attachment VARCHAR(255),
+    attachment_link VARCHAR(255),
+    remarks TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- Insert sample data into the tenders table
+INSERT INTO tenders (tender_number, category, brief_description_en, brief_description_hi, last_date_time, intender_email, attachment, attachment_link, remarks)
+VALUES
+    (1001, 'Construction', 'Construction of Building', 'इमारत निर्माण', '2024-05-01 12:00:00', 'example@example.com', 'example.pdf', 'https://example.com/example.pdf', 'Sample remarks for the tender.'),
+    (1002, 'Infrastructure', 'Road Construction Project', 'सड़क निर्माण परियोजना', '2024-05-03 12:00:00', 'info@example.com', NULL, NULL, 'This tender is for the construction of roads.');
+
+
+CREATE TABLE notices (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title_en VARCHAR(255) NOT NULL,
+    title_hi VARCHAR(255) NOT NULL,
+    last_date_time DATETIME NOT NULL,
+    attachment VARCHAR(255),
+    attachment_link VARCHAR(255),
+    remarks TEXT,
+    department_section_id INT NOT NULL,
+    priority INT DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (department_section_id) REFERENCES department_sections(id)
+);
