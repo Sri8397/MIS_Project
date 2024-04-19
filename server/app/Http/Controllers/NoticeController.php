@@ -91,7 +91,7 @@ class NoticeController extends Controller
             return response()->json([
                 'status' => 422,
                 'errors' => $validator->messages(),
-                'message' => 'Either file is not uploaded or file is not pdf or file size is greater than 2MB.',
+                'message' => 'validation failed',
             ], 422);
         }
 
@@ -113,13 +113,13 @@ class NoticeController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'title_en' => 'required|max:255',
-            'title_hi' => 'required|max:255',
-            'last_date_time' => 'required|date',
-            'attachment' => 'nullable|file|mimes:pdf|max:2048',
+            'title_en' => 'sometimes|required|max:255',
+            'title_hi' => 'sometimes|required|max:255',
+            'last_date_time' => 'sometimes|required|date',
+            'attachment' => 'nullable|file|mimes:pdf|max:5120',
             'attachment_link' => 'nullable|url',
             'remarks' => 'nullable|string',
-            'department_section_id' => 'required|exists:department_sections,id',
+            'department_section_id' => 'sometimes|required|exists:department_sections,id',
             'priority' => 'nullable|integer',
         ]);
 
@@ -127,7 +127,7 @@ class NoticeController extends Controller
             return response()->json([
                 'status' => 422,
                 'errors' => $validator->messages(),
-                'message' => 'Either file is not uploaded or file is not pdf or file size is greater than 2MB.',
+                'message' => 'validation failed',
             ], 422);
         }
 

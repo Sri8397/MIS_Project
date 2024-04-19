@@ -23,7 +23,7 @@ class TenderController extends Controller
             $data = [
                 'id' => $tender->id,
                 'tender_number' => $tender->tender_number,
-                'category' => $tender->category,
+                'category_id' => $tender->category_id,
                 'brief_description_en' => $tender->brief_description_en,
                 'brief_description_hi' => $tender->brief_description_hi,
                 'last_date_time' => $tender->last_date_time,
@@ -49,14 +49,14 @@ class TenderController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'tender_number' => 'required|integer',
-            'category' => 'required|max:255',
+            'tender_number' => 'required|integer|unique:tenders',
+            'category_id' => 'required|exists:categories,id',
             'brief_description_en' => 'required|max:255',
             'brief_description_hi' => 'required|max:255',
             'last_date_time' => [
                 'required',
                 'date',
-                'after_or_equal:' . Date::now()->addDays(2)->toDateString(), // Ensure the date is at least two days in the future
+                'after_or_equal:' . Date::now()->addDays(2)->toDateString(),
             ],
             'intender_email' => 'required|email',
             'attachment' => 'nullable|file|mimes:pdf|max:2048',
@@ -68,7 +68,7 @@ class TenderController extends Controller
             return response()->json([
                 'status' => 422,
                 'errors' => $validator->messages(),
-                'message' => 'Either file is not uploaded or file is not pdf or file size is greater than 2MB.',
+                'message' => 'validation failed',
             ], 422);
         }
 
@@ -96,7 +96,7 @@ class TenderController extends Controller
         $data = [
             'id' => $tender->id,
             'tender_number' => $tender->tender_number,
-            'category' => $tender->category,
+            'category_id' => $tender->category_id,
             'brief_description_en' => $tender->brief_description_en,
             'brief_description_hi' => $tender->brief_description_hi,
             'last_date_time' => $tender->last_date_time,
@@ -125,15 +125,15 @@ class TenderController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'tender_number' => 'sometimes|required|integer',
-            'category' => 'sometimes|required|max:255',
+            'tender_number' => 'sometimes|required|integer|unique:tenders,tender_number,' . $id,
+            'category_id' => 'sometimes|required|exists:categories,id',
             'brief_description_en' => 'sometimes|required|max:255',
             'brief_description_hi' => 'sometimes|required|max:255',
             'last_date_time' => [
                 'sometimes',
                 'required',
                 'date',
-                'after_or_equal:' . Date::now()->addDays(2)->toDateString(), // Ensure the date is at least two days in the future
+                'after_or_equal:' . Date::now()->addDays(2)->toDateString(),
             ],
             'intender_email' => 'sometimes|required|email',
             'attachment' => 'nullable|file|mimes:pdf|max:2048',
@@ -145,7 +145,7 @@ class TenderController extends Controller
             return response()->json([
                 'status' => 422,
                 'errors' => $validator->messages(),
-                'message' => 'Either file is not uploaded or file is not pdf or file size is greater than 2MB.',
+                'message' => 'validation failed',
             ], 422);
         }
 
