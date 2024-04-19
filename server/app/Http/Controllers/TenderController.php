@@ -59,7 +59,7 @@ class TenderController extends Controller
                 'after_or_equal:' . Date::now()->addDays(2)->toDateString(),
             ],
             'intender_email' => 'required|email',
-            'attachment' => 'nullable|file|mimes:pdf|max:2048',
+            'attachment' => 'nullable|file|mimes:pdf|max:5120',
             'attachment_link' => 'nullable|url',
             'remarks' => 'nullable|string',
         ]);
@@ -136,7 +136,7 @@ class TenderController extends Controller
                 'after_or_equal:' . Date::now()->addDays(2)->toDateString(),
             ],
             'intender_email' => 'sometimes|required|email',
-            'attachment' => 'nullable|file|mimes:pdf|max:2048',
+            'attachment' => 'nullable|file|mimes:pdf|max:5120',
             'attachment_link' => 'nullable|url',
             'remarks' => 'nullable|string',
         ]);

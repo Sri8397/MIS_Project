@@ -6,7 +6,7 @@ use App\Http\Controllers\NoticeController;
 use App\Http\Controllers\DepartmentSectionController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\UploadController;
+use App\Http\Controllers\CategoryController;
 use App\Models\OfficeOrder;
 use App\Models\Tender;
 use App\Models\Notice;
@@ -46,70 +46,64 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('GetBiometicAttendance', 'GetBiometicAttendance');
 });
 
-Route::prefix('uploads')->middleware('auth.check')->group(function () {
-    Route::controller(UploadController::class)->group(function () {
+Route::prefix('catgories')->middleware('auth.check')->group(function () {
+    Route::controller(CategoryController::class)->group(function () {
         Route::get('/', 'index');
         Route::post('/', 'store');
         Route::get('{id}', 'show');
     });
 });
 
+Route::prefix('department-sections')->middleware('auth.check')->group(function () {
+    Route::controller(DepartmentSectionController::class)->group(function () {
+        Route::get('', [DepartmentSectionController::class, 'index']);
+        Route::post('', [DepartmentSectionController::class, 'store']);
+        Route::get('{id}', [DepartmentSectionController::class, 'show']);
+    });
+});
 
-use App\Http\Controllers\CategoryController;
+Route::prefix('office-orders')->middleware('auth.check')->group(function () {
+    Route::controller(OfficeOrderController::class)->group(function () {
+        // Office Order Routes
+        Route::get('', [OfficeOrderController::class, 'index']);
+        Route::post('', [OfficeOrderController::class, 'store']);
+        Route::get('{id}', [OfficeOrderController::class, 'show']);
+        Route::post('{id}', [OfficeOrderController::class, 'update']);
+        Route::delete('{id}', [OfficeOrderController::class, 'destroy']);
+        Route::get('{id}/pdf', function ($id) {
+            return (new OfficeOrderController)->servePDF(OfficeOrder::class, $id);
+        })->name('office-orders.pdf');
+    });
+});
 
-Route::get('categories', [CategoryController::class, 'index']);
-Route::post('categories', [CategoryController::class, 'store']);
-Route::get('categories/{id}', [CategoryController::class, 'show']);
-
-
-
-
-Route::get('department-sections', [DepartmentSectionController::class, 'index']);
-Route::post('department-sections', [DepartmentSectionController::class, 'store']);
-Route::get('department-sections/{id}', [DepartmentSectionController::class, 'show']);
-
-// Office Order Routes
-Route::get('office-orders', [OfficeOrderController::class, 'index']);
-Route::post('office-orders', [OfficeOrderController::class, 'store']);
-Route::get('office-orders/{id}', [OfficeOrderController::class, 'show']);
-Route::post('office-orders/{id}', [OfficeOrderController::class, 'update']);
-Route::delete('office-orders/{id}', [OfficeOrderController::class, 'destroy']);
-
-// Office Order PDF Route
-// Route::get('office-orders/{id}/pdf', [OfficeOrderController::class, 'servePDF'])->name('office-orders.pdf');
-
-Route::get('office-orders/{id}/pdf', function ($id) {
-    return (new OfficeOrderController)->servePDF(OfficeOrder::class, $id);
-})->name('office-orders.pdf');
-
-// Tender Routes
-Route::get('tenders', [TenderController::class, 'index']);
-Route::post('tenders', [TenderController::class, 'store']);
-Route::get('tenders/{id}', [TenderController::class, 'show']);
-Route::post('tenders/{id}', [TenderController::class, 'update']);
-Route::delete('tenders/{id}', [TenderController::class, 'destroy']);
-
-// Tender PDF Route
-// Route::get('tenders/{id}/pdf', [TenderController::class, 'servePDF'])->name('tenders.pdf');
-Route::get('tenders/{id}/pdf', function ($id) {
-    return (new TenderController)->servePDF(Tender::class, $id);
-})->name('tenders.pdf');
-
-// Notice Routes
-Route::get('notices', [NoticeController::class, 'index']);
-Route::post('notices', [NoticeController::class, 'store']);
-Route::get('notices/{id}', [NoticeController::class, 'show']);
-Route::post('notices/{id}', [NoticeController::class, 'update']);
-Route::delete('notices/{id}', [NoticeController::class, 'destroy']);
-// Route::get('notices/{id}/pdf', [NoticeController::class, 'servePDF'])->name('notices.pdf');
+Route::prefix('tenders')->middleware('auth.check')->group(function () {
+    Route::controller(TenderController::class)->group(function () {
+        // Office Order Routes
+        Route::get('', [TenderController::class, 'index']);
+        Route::post('', [TenderController::class, 'store']);
+        Route::get('{id}', [TenderController::class, 'show']);
+        Route::post('{id}', [TenderController::class, 'update']);
+        Route::delete('{id}', [TenderController::class, 'destroy']);
+        Route::get('{id}/pdf', function ($id) {
+            return (new TenderController)->servePDF(OfficeOrder::class, $id);
+        })->name('office-orders.pdf');
+    });
+});
 
 
-// Notice PDF Route
-// Route::get('tenders/{id}/pdf', [TenderController::class, 'servePDF'])->name('tenders.pdf');
-Route::get('notices/{id}/pdf', function ($id) {
-    return (new NoticeController)->servePDF(Notice::class, $id);
-})->name('notices.pdf');
-
+Route::prefix('notices')->middleware('auth.check')->group(function () {
+    Route::controller(NoticeController::class)->group(function () {
+        // Office Order Routes
+        Route::get('', [NoticeController::class, 'index']);
+        Route::post('', [NoticeController::class, 'store']);
+        Route::get('{id}', [NoticeController::class, 'show']);
+        Route::post('{id}', [NoticeController::class, 'update']);
+        Route::delete('{id}', [NoticeController::class, 'destroy']);
+        Route::get('{id}/pdf', function ($id) {
+            return (new NoticeController)->servePDF(OfficeOrder::class, $id);
+        })->name('office-orders.pdf');
+    });
+});
 
 // here add routes Module wise
 include ('adminRoutes.php');

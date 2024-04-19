@@ -80,7 +80,7 @@ class NoticeController extends Controller
             'title_en' => 'required|max:255',
             'title_hi' => 'required|max:255',
             'last_date_time' => 'required|date',
-            'attachment' => 'nullable|file|mimes:pdf|max:2048',
+            'attachment' => 'nullable|file|mimes:pdf|max:5120',
             'attachment_link' => 'nullable|url',
             'remarks' => 'nullable|string',
             'department_section_id' => 'required|exists:department_sections,id',
