@@ -77,7 +77,8 @@ const NoticesMain = () => {
     attachmentType: '',
     attachmentLink: '',
     attachmentFiles: [],
-    remarks: ''
+    remarks: '',
+    priority: 0,
   });
 
   useEffect(() => {
@@ -159,11 +160,21 @@ const handleOptionChange = (event) => {
       setErrorMessage('Please fill in all required fields.');
       return;
     }
-    if (step === 3 && !formData.lastDate) {
+   
+    if (step === 3) {
+      if (!formData.lastDate) {
       setErrorMessage('Please fill in all required fields.');
       return;
+      }else{
+        console.log(formData.lastDate)
+        const selectedDate = new Date(formData.lastDate);
+        if (selectedDate < new Date()) {
+          setErrorMessage('Please select a future date.');
+          return;
+        }
+      }
     }
-    
+   
     setErrorMessage(''); // Clear error message
     setStep((prevStep) => prevStep + 1);
   };
@@ -193,17 +204,19 @@ const handleOptionChange = (event) => {
     requestBody.append('last_date_time', formData.lastDate);
     requestBody.append('remarks', formData.remarks);
     requestBody.append('department_section_id', elements.find((item) => item.name === selectedOption).id);
+    requestBody.append('priority', formData.priority);
     
     try {
-      const res = await axios.post('http://localhost:8000/api/office-orders', requestBody,{
+      const res = await axios.post('http://localhost:8000/api/notices', requestBody,{
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
       setOpenModal(true); // Open modal after successful submission
-    } catch (error) {
-      console.log("Something went wrong");
-      console.log(error.response.data.message);
+    } catch (e) {
+      console.log(e.response.data.errors)
+      // console.log("Something went wrong");
+      // console.log(error.response.data.message);
       // Handle error
     }
     setErrorMessage(''); 
@@ -341,6 +354,14 @@ const closeModal = () => {
             <TextField
               fullWidth
               variant="outlined"
+              label="Priority"
+              name="priority"
+              value={formData.priority}
+              onChange={handleChange}
+            />
+            <TextField
+              fullWidth
+              variant="outlined"
               label="Remarks"
               name="remarks"
               value={formData.remarks}
@@ -357,7 +378,7 @@ const closeModal = () => {
         >
           <div className={classes.paper}>
             <Typography variant="h6" id="modal-title">
-              Order Submitted Successfully
+              Notice Submitted Successfully
             </Typography>
             <Button variant="contained" color="primary" onClick={closeModal}>
               Close

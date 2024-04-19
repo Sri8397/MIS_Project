@@ -13,7 +13,7 @@ import {
   FormControlLabel,
 } from '@material-ui/core';
 import UploadArea from '../components/uploadArea';
-import { set } from 'nprogress';
+import axios from 'axios';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -74,6 +74,16 @@ const TendersMain = () => {
   });
   const [errorMessage, setErrorMessage] = useState(''); // State for error message
   const [openModal, setOpenModal] = useState(false);
+  const [files, setFiles] = useState([]); // State for uploaded files
+  const [availableCategories, setAvailableCategories] = useState([]); 
+  
+  // useEffect(() => {
+  //     const fetchAvailableCategories = async () => {
+  //       try{
+  //         const categories = 
+  //       }
+  //     }
+  //   ,[]})
 
   const handleChange = (e) => {
     const { name, value, checked } = e.target;
@@ -127,6 +137,13 @@ const TendersMain = () => {
       setErrorMessage('Please fill in all required fields.');
       return;
     }
+    if(step === 3){
+      const selectedDate = new Date(formData.lastDate);
+      if (selectedDate < new Date()) {
+        setErrorMessage('Please select a future date.');
+        return;
+      }
+    }
     
     setErrorMessage(''); // Clear error message
     setStep((prevStep) => prevStep + 1);
@@ -136,20 +153,47 @@ const TendersMain = () => {
     setStep((prevStep) => prevStep - 1);
   };
 
-  const submitForm = () => {
+  const submitForm = async () => {
     if(step === 4 && formData.attachmentRequired && !formData.attachmentType){
       setErrorMessage('Please fill in all required fields.');
       return;
     }
-    if (step === 4 && formData.attachmentType === 'link' && !formData.attachmentLink || formData.attachmentType === 'upload' && formData.attachmentFiles.length === 0) {
+    if (step === 4 && formData.attachmentType === 'link' && !formData.attachmentLink || formData.attachmentType === 'upload' && files.length === 0) {
       setErrorMessage('Please fill in all required fields.');
       return;
     }
+    const requestBody = new FormData();
+    if (formData.attachmentType === 'link') {
+      requestBody.append('attachment_link', formData.attachmentLink);
+    } else if (formData.attachmentType === 'upload') {
+      requestBody.append('attachment', files[0]);
+    }
+    requestBody.append('tender_number', formData.tenderNumber);
+    requestBody.append('category', formData.category);
+    requestBody.append('brief_description_en', formData.englishDesc);
+    requestBody.append('brief_description_hi', formData.hindiDesc);
+    requestBody.append('last_date_time', formData.lastDate);
+    requestBody.append('intender_email', formData.indenterMail);
+    requestBody.append('remarks', formData.remarks);
 
+    try{
+      const res = axios.post('http://localhost:8000/api/tenders', requestBody, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+        });
+      
+      setOpenModal(true);
+    }catch(e){
+      // const error = e.response.data.errors;
+      // error.map((err) => {
+      //   console.log(err)
+      // })
+      console.log(error.response.data.message);
+      
+    }
     // Implement form submission logic here
-    console.log('Form submitted:', formData);
     setErrorMessage(''); // Clear error message
-    setOpenModal(true); // Open modal after form submission
 };
 
 const closeModal = () => {
@@ -275,7 +319,7 @@ const closeModal = () => {
                   </Select>
                 </FormControl>
                 {formData.attachmentType === 'upload' && (
-                  <UploadArea formData={formData} setFormData={setFormData} uploadedFiles={formData.attachmentFiles}/>
+                  <UploadArea files = {files} setFiles = {setFiles} setErrorMessage={setErrorMessage}/>
                 )}
                 {formData.attachmentType === 'link' && (
                   <TextField
@@ -309,7 +353,7 @@ const closeModal = () => {
         >
           <div className={classes.paper}>
             <Typography variant="h6" id="modal-title">
-              Submitted Successfully
+              Tender Submitted Successfully
             </Typography>
             <Button variant="contained" color="primary" onClick={closeModal}>
               Close
