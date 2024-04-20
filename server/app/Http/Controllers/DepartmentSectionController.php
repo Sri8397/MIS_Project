@@ -12,14 +12,9 @@ use App\Http\Controllers\Controller;
 
 class DepartmentSectionController extends Controller
 {
-    
+
     public function index()
     {
-        $user = Auth::user();
-        if (!$user) {
-            return response()->json(['error' => 'Unauthorised.', 'message' => 'Invalid User Id !'], 401);
-        }
-
         $departmentSections = DepartmentSection::all();
         return response()->json(['data' => $departmentSections], 200);
     }
