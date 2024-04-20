@@ -69,6 +69,17 @@ const Component1 = () => {
         setOpen(true); // Open the modal
     };
 
+    const handleDelete = async (rowData) => {
+        setFormData(rowData);
+        try {
+            const res = await axios.delete(`http://localhost:8000/api/tenders/${rowData.id}`);
+            console.log("res", res);
+            fetchData()
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
     const handleClose = () => {
         setOpen(false);
     };
@@ -134,6 +145,7 @@ const Component1 = () => {
                             <TableCell align="right">Remarks</TableCell>
                             <TableCell align="right">Link attached</TableCell>
                             <TableCell align="right">Actions</TableCell>
+                            <TableCell align="center">Delete</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -157,6 +169,15 @@ const Component1 = () => {
                                         onClick={() => handleOpen(row)} // Pass the row data to handleEdit function
                                     >
                                         Edit
+                                    </Button>
+                                </TableCell>
+                                <TableCell align="right">
+                                    <Button
+                                        variant="contained"
+                                        color="primary"
+                                        onClick={() => handleDelete(row)} // Pass the row data to handleDelete function
+                                    >
+                                        Delete
                                     </Button>
                                 </TableCell>
                             </TableRow>

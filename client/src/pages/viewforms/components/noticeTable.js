@@ -60,24 +60,28 @@ const Component1 = () => {
 
     useEffect(() => {
 
-        
+
         fetchData();
     }, []);
 
     // Sort sample data based on priority and then time uploaded
-    const sortedModifiedData = data.sort((a, b) => {
-        if (a.priority !== b.priority) {
-            return a.priority ? -1 : 1; // Sort by priority
-        } else {
-            return new Date(a.timeUploaded) - new Date(b.timeUploaded); // If priority is the same, sort by time uploaded
-        }
-    });
 
     const handleOpen = (rowData) => {
         setEditedData(rowData); // Set the currently edited row's data
         setFormData(rowData); // Populate form data with row data
         setOpen(true); // Open the modal
     };
+
+    const handleDelete = async (rowData) => {
+        setFormData(rowData);
+        try {
+            const res = await axios.delete(`http://localhost:8000/api/notices/${rowData.id}`);
+            console.log("res", res);
+            fetchData()
+        } catch (e) {
+            console.log(e);
+        }
+    }
 
     const handleClose = () => {
         setOpen(false);
@@ -122,7 +126,7 @@ const Component1 = () => {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
-            }); 
+            });
             console.log("res", res);
             fetchData()
         } catch (e) {
@@ -150,10 +154,11 @@ const Component1 = () => {
                             <TableCell align="right">Remarks</TableCell>
                             <TableCell align="right">Link attached</TableCell>
                             <TableCell align="right">Actions</TableCell>
+                            <TableCell align="center">Delete</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {sortedModifiedData.map((row) => (
+                        {data.map((row) => (
                             <TableRow key={row.department_section_id}>
                                 <TableCell component="th" scope="row">
                                     {row.department_type}
@@ -175,24 +180,33 @@ const Component1 = () => {
                                         Edit
                                     </Button>
                                 </TableCell>
+                                <TableCell align="right">
+                                    <Button
+                                        variant="contained"
+                                        color="primary"
+                                        onClick={() => handleDelete(row)} // Pass the row data to handleDelete function
+                                    >
+                                        Delete
+                                    </Button>
+                                </TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
                 </Table>
             </TableContainer>
             <Modal
-                style={{display: "flex", justifyContent: "center", alignItems: "center"}}
+                style={{ display: "flex", justifyContent: "center", alignItems: "center" }}
                 className={classes.modal}
                 open={open}
                 onClose={handleClose}
                 closeAfterTransition
-                // BackdropComponent={Backdrop}
-                // BackdropProps={{
-                    // timeout: 500,
-                // }}
+            // BackdropComponent={Backdrop}
+            // BackdropProps={{
+            // timeout: 500,
+            // }}
             >
                 <Fade in={open}>
-                    <div style={{margin:"0 15vh", padding: "3vh",borderRadius: "5px" ,backgroundColor: "white", boxShadow: "inherit", outline: "none", minWidth: "50%", minHeight:"50%"}}>
+                    <div style={{ margin: "0 15vh", padding: "3vh", borderRadius: "5px", backgroundColor: "white", boxShadow: "inherit", outline: "none", minWidth: "50%", minHeight: "50%" }}>
                         <FormControl fullWidth margin="normal">
                             <InputLabel>Section/Department</InputLabel>
                             <Select
