@@ -21,7 +21,15 @@ trait PDFControllerTrait
 
             $location = $item->attachment;
             $path = Storage::path($location);
-            return response()->file($path);
+            
+            // Set cache control headers to prevent browser caching
+            $headers = [
+                'Cache-Control' => 'no-store, no-cache, must-revalidate, max-age=0',
+                'Pragma' => 'no-cache',
+                'Expires' => 'Sat, 01 Jan 2000 00:00:00 GMT',
+            ];
+
+            return response()->file($path, $headers);
         } catch (ModelNotFoundException $e) {
             return response()->json(['error' => 'Resource not found'], 404);
         } catch (\Exception $e) {
@@ -29,4 +37,3 @@ trait PDFControllerTrait
         }
     }
 }
-
