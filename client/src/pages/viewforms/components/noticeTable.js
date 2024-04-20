@@ -42,35 +42,47 @@ const Component1 = () => {
         { id: 5, column1: 'Data 17', column2: 'Data 18', column3: 'Data 19', column4: 'Data 20', pdfLink: 'https://example.com/pdf5', pdfUrl: 'https://example.com/pdf/sample5.pdf', timeUploaded: '2024-04-12T14:30:00', priority: true },
     ];
 
+    const fetchData = async () => {
+        try {
+            const res = await axios.get('http://localhost:8000/api/department-sections');
+            setElements(res.data.data);
+            const response = await axios.get('http://localhost:8000/api/notices');
+            const modifiedData = response.data.data.map(notice => {
+                const type = res.data.data.find((item) => item.id === notice.department_section_id).type;
+                const name = res.data.data.find((item) => item.id === notice.department_section_id).name;
+                return { ...notice, department_type: type, department_name: name, }
+            });
+            setData(modifiedData);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    };
+
+
     useEffect(() => {
 
-        const fetchData = async () => {
-            try {
-                const res = await axios.get('http://localhost:8000/api/department-sections');
-                setElements(res.data.data);
-                const response = await axios.get('http://localhost:8000/api/notices');
-                const modifiedData = response.data.data.map(notice => {
-                    const type = res.data.data.find((item) => item.id === notice.department_section_id).type;
-                    const name = res.data.data.find((item) => item.id === notice.department_section_id).name;
-                    return { ...notice, department_type: type, department_name: name, }
-                });
-                setData(modifiedData);
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
-        };
 
         fetchData();
     }, []);
 
     // Sort sample data based on priority and then time uploaded
-   
 
     const handleOpen = (rowData) => {
         setEditedData(rowData); // Set the currently edited row's data
         setFormData(rowData); // Populate form data with row data
         setOpen(true); // Open the modal
     };
+
+    const handleDelete = async (rowData) => {
+        setFormData(rowData);
+        try {
+            const res = await axios.delete(`http://localhost:8000/api/notices/${rowData.id}`);
+            console.log("res", res);
+            fetchData()
+        } catch (e) {
+            console.log(e);
+        }
+    }
 
     const handleClose = () => {
         setOpen(false);
@@ -115,9 +127,9 @@ const Component1 = () => {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
-            }); 
+            });
             console.log("res", res);
-
+            fetchData()
         } catch (e) {
             console.log(e)
             // console.log("Something went wrong");
@@ -129,9 +141,9 @@ const Component1 = () => {
     };
 
     return (
-        <div>
+        <div style={{ height: "60vh" }}>
             <h2>Notices</h2>
-            <TableContainer component={Paper} style={{overflowY: 'auto'}}>
+            <TableContainer style={{ height: "100%" }} component={Paper}>
                 <Table className={classes.table} aria-label="simple table">
                     <TableHead>
                         <TableRow>
@@ -143,6 +155,7 @@ const Component1 = () => {
                             <TableCell align="right">Remarks</TableCell>
                             <TableCell align="right">Link attached</TableCell>
                             <TableCell align="right">Actions</TableCell>
+                            <TableCell align="center">Delete</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -154,7 +167,15 @@ const Component1 = () => {
                                 <TableCell align="right">{row.department_name}</TableCell>
                                 <TableCell align="right">{row.title_en}</TableCell>
                                 <TableCell align="right">{row.title_hi}</TableCell>
-                                <TableCell align="right">{row.last_date_time}</TableCell>
+                                <TableCell align="right">{new Intl.DateTimeFormat("en-US", {
+                                    year: "numeric",
+                                    month: "2-digit", // or "short", "numeric", "2-digit", etc. based on your preference
+                                    day: "numeric",
+                                    hour: "numeric",
+                                    minute: "numeric",
+                                    // second: "numeric",
+                                    // timeZoneName: "short", // or "long", "short", "none", etc.
+                                }).format(new Date(row.last_date_time))}</TableCell>
                                 <TableCell align="right">{row.remarks}</TableCell>
                                 <TableCell align="right">
                                     <a href={row.attachment_link}>Link</a>
@@ -168,23 +189,33 @@ const Component1 = () => {
                                         Edit
                                     </Button>
                                 </TableCell>
+                                <TableCell align="right">
+                                    <Button
+                                        variant="contained"
+                                        color="primary"
+                                        onClick={() => handleDelete(row)} // Pass the row data to handleDelete function
+                                    >
+                                        Delete
+                                    </Button>
+                                </TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
                 </Table>
             </TableContainer>
             <Modal
+                style={{ display: "flex", justifyContent: "center", alignItems: "center" }}
                 className={classes.modal}
                 open={open}
                 onClose={handleClose}
                 closeAfterTransition
-                BackdropComponent={Backdrop}
-                BackdropProps={{
-                    timeout: 500,
-                }}
+            // BackdropComponent={Backdrop}
+            // BackdropProps={{
+            // timeout: 500,
+            // }}
             >
                 <Fade in={open}>
-                    <div className={classes.paper}>
+                    <div style={{ margin: "0 15vh", padding: "3vh", borderRadius: "5px", backgroundColor: "white", boxShadow: "inherit", outline: "none", minWidth: "50%", minHeight: "50%" }}>
                         <FormControl fullWidth margin="normal">
                             <InputLabel>Section/Department</InputLabel>
                             <Select
@@ -275,3 +306,6 @@ const Component1 = () => {
 };
 
 export default Component1;
+
+
+
