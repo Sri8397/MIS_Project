@@ -101,7 +101,7 @@ class NoticeController extends Controller
             'attachment_link' => 'nullable|url',
             'remarks' => 'nullable|string',
             'department_section_id' => 'required|exists:department_sections,id',
-            'priority' => 'nullable|integer',
+            'priority' => 'required|integer|min:0|max:10',
         ]);
 
         if ($validator->fails()) {
@@ -137,7 +137,7 @@ class NoticeController extends Controller
             'attachment_link' => 'nullable|url',
             'remarks' => 'nullable|string',
             'department_section_id' => 'sometimes|required|exists:department_sections,id',
-            'priority' => 'nullable|integer',
+            'priority' => 'required|integer|min:0|max:10',
         ]);
 
         if ($validator->fails()) {
