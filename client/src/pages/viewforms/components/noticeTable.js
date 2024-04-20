@@ -33,6 +33,7 @@ const Component1 = () => {
     const [files, setFiles] = useState([]);
     const [formData, setFormData] = useState({});
 
+
     const sampleData = [
         { id: 1, column1: 'Data 1', column2: 'Data 2', column3: 'Data 3', column4: 'Data 4', pdfLink: 'https://example.com/pdf1', pdfUrl: 'https://example.com/pdf/sample1.pdf', timeUploaded: '2024-04-12T10:30:00', priority: true },
         { id: 2, column1: 'Data 5', column2: 'Data 6', column3: 'Data 7', column4: 'Data 8', pdfLink: 'https://example.com/pdf2', pdfUrl: 'https://example.com/pdf/sample2.pdf', timeUploaded: '2024-04-12T11:30:00', priority: false },
@@ -63,13 +64,7 @@ const Component1 = () => {
     }, []);
 
     // Sort sample data based on priority and then time uploaded
-    const sortedModifiedData = data.sort((a, b) => {
-        if (a.priority !== b.priority) {
-            return a.priority ? -1 : 1; // Sort by priority
-        } else {
-            return new Date(a.timeUploaded) - new Date(b.timeUploaded); // If priority is the same, sort by time uploaded
-        }
-    });
+   
 
     const handleOpen = (rowData) => {
         setEditedData(rowData); // Set the currently edited row's data
@@ -136,7 +131,7 @@ const Component1 = () => {
     return (
         <div>
             <h2>Notices</h2>
-            <TableContainer component={Paper}>
+            <TableContainer component={Paper} style={{overflowY: 'auto'}}>
                 <Table className={classes.table} aria-label="simple table">
                     <TableHead>
                         <TableRow>
@@ -151,7 +146,7 @@ const Component1 = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {sortedModifiedData.map((row) => (
+                        {data.map((row) => (
                             <TableRow key={row.department_section_id}>
                                 <TableCell component="th" scope="row">
                                     {row.department_type}
