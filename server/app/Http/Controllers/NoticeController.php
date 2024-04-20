@@ -15,7 +15,7 @@ class NoticeController extends Controller
 
     public function index()
     {
-        $notices = Notice::all();
+        $notices = Notice::orderBy('priority', 'desc')->orderBy('updated_at', 'desc')->get();
 
         $noticesData = [];
 
