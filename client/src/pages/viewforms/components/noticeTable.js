@@ -41,24 +41,26 @@ const Component1 = () => {
         { id: 5, column1: 'Data 17', column2: 'Data 18', column3: 'Data 19', column4: 'Data 20', pdfLink: 'https://example.com/pdf5', pdfUrl: 'https://example.com/pdf/sample5.pdf', timeUploaded: '2024-04-12T14:30:00', priority: true },
     ];
 
+    const fetchData = async () => {
+        try {
+            const res = await axios.get('http://localhost:8000/api/department-sections');
+            setElements(res.data.data);
+            const response = await axios.get('http://localhost:8000/api/notices');
+            const modifiedData = response.data.data.map(notice => {
+                const type = res.data.data.find((item) => item.id === notice.department_section_id).type;
+                const name = res.data.data.find((item) => item.id === notice.department_section_id).name;
+                return { ...notice, department_type: type, department_name: name, }
+            });
+            setData(modifiedData);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    };
+
+
     useEffect(() => {
 
-        const fetchData = async () => {
-            try {
-                const res = await axios.get('http://localhost:8000/api/department-sections');
-                setElements(res.data.data);
-                const response = await axios.get('http://localhost:8000/api/notices');
-                const modifiedData = response.data.data.map(notice => {
-                    const type = res.data.data.find((item) => item.id === notice.department_section_id).type;
-                    const name = res.data.data.find((item) => item.id === notice.department_section_id).name;
-                    return { ...notice, department_type: type, department_name: name, }
-                });
-                setData(modifiedData);
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
-        };
-
+        
         fetchData();
     }, []);
 
@@ -122,7 +124,7 @@ const Component1 = () => {
                 },
             }); 
             console.log("res", res);
-
+            fetchData()
         } catch (e) {
             console.log(e)
             // console.log("Something went wrong");
@@ -179,17 +181,18 @@ const Component1 = () => {
                 </Table>
             </TableContainer>
             <Modal
+                style={{display: "flex", justifyContent: "center", alignItems: "center"}}
                 className={classes.modal}
                 open={open}
                 onClose={handleClose}
                 closeAfterTransition
-                BackdropComponent={Backdrop}
-                BackdropProps={{
-                    timeout: 500,
-                }}
+                // BackdropComponent={Backdrop}
+                // BackdropProps={{
+                    // timeout: 500,
+                // }}
             >
                 <Fade in={open}>
-                    <div className={classes.paper}>
+                    <div style={{margin:"0 15vh", padding: "3vh",borderRadius: "5px" ,backgroundColor: "white", boxShadow: "inherit", outline: "none", minWidth: "50%", minHeight:"50%"}}>
                         <FormControl fullWidth margin="normal">
                             <InputLabel>Section/Department</InputLabel>
                             <Select
@@ -280,3 +283,6 @@ const Component1 = () => {
 };
 
 export default Component1;
+
+
+

@@ -33,6 +33,7 @@ const Component1 = () => {
     const [editedData, setEditedData] = useState(null); // State to hold the currently edited row's data
     const [files, setFiles] = useState([]);
     const [formData, setFormData] = useState({});
+    const [dummyVariable, setDummyVariable] = useState(true);
 
     const sampleData = [
         { id: 1, column1: 'Data 1', column2: 'Data 2', column3: 'Data 3', column4: 'Data 4', pdfLink: 'https://example.com/pdf1', pdfUrl: 'https://example.com/pdf/sample1.pdf', timeUploaded: '2024-04-12T10:30:00', priority: true },
@@ -42,26 +43,25 @@ const Component1 = () => {
         { id: 5, column1: 'Data 17', column2: 'Data 18', column3: 'Data 19', column4: 'Data 20', pdfLink: 'https://example.com/pdf5', pdfUrl: 'https://example.com/pdf/sample5.pdf', timeUploaded: '2024-04-12T14:30:00', priority: true },
     ];
 
+    const fetchData = async () => {
+        try {
+            const res = await axios.get('http://localhost:8000/api/department-sections');
+            setElements(res.data.data);
+            
+            // const response = await axios.get('http://localhost:8000/api/notices');
+            const response = await axios.get('http://localhost:8000/api/office-orders');
+            const modifiedData = response.data.data.map(notice => {
+                const type = res.data.data.find((item) => item.id === notice.department_section_id).type;
+                const name = res.data.data.find((item) => item.id === notice.department_section_id).name;
+                return { ...notice, department_type: type, department_name: name, }
+            });
+            setData(modifiedData);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    };
+
     useEffect(() => {
-
-        const fetchData = async () => {
-            try {
-                const res = await axios.get('http://localhost:8000/api/department-sections');
-                setElements(res.data.data);
-                
-                // const response = await axios.get('http://localhost:8000/api/notices');
-                const response = await axios.get('http://localhost:8000/api/office-orders');
-                const modifiedData = response.data.data.map(notice => {
-                    const type = res.data.data.find((item) => item.id === notice.department_section_id).type;
-                    const name = res.data.data.find((item) => item.id === notice.department_section_id).name;
-                    return { ...notice, department_type: type, department_name: name, }
-                });
-                setData(modifiedData);
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
-        };
-
         fetchData();
     }, []);
 
@@ -115,12 +115,12 @@ const Component1 = () => {
         requestBody.append('priority', formData.priority);
         console.log(requestBody.forEach((item) => console.log(item)));
         try {
-            const res = await axios.put(`http://localhost:8000/api/notices/${formData.id}`, requestBody, {
+            const res = await axios.post(`http://localhost:8000/api/office-orders/${formData.id}`, requestBody, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
-            }); console.log("res", res);
-
+            }); 
+            fetchData()
         } catch (e) {
             console.log(e)
             // console.log("Something went wrong");
@@ -177,17 +177,13 @@ const Component1 = () => {
                 </Table>
             </TableContainer>
             <Modal
-                className={classes.modal}
+                style={{display: "flex", justifyContent: "center", alignItems: "center"}}
                 open={open}
                 onClose={handleClose}
                 closeAfterTransition
-                BackdropComponent={Backdrop}
-                BackdropProps={{
-                    timeout: 500,
-                }}
             >
                 <Fade in={open}>
-                    <div className={classes.paper}>
+                    <div style={{margin:"0 15vh", padding: "3vh",borderRadius: "5px" ,backgroundColor: "white", boxShadow: "inherit", outline: "none", minWidth: "50%", minHeight:"50%"}}>
                         <FormControl fullWidth margin="normal">
                             <InputLabel>Section/Department</InputLabel>
                             <Select
