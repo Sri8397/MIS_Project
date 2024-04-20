@@ -140,9 +140,9 @@ const Component1 = () => {
     };
 
     return (
-        <div>
+        <div style={{ height: "60vh" }}>
             <h2>Notices</h2>
-            <TableContainer component={Paper}>
+            <TableContainer style={{ height: "100%" }} component={Paper}>
                 <Table className={classes.table} aria-label="simple table">
                     <TableHead>
                         <TableRow>
@@ -166,7 +166,15 @@ const Component1 = () => {
                                 <TableCell align="right">{row.department_name}</TableCell>
                                 <TableCell align="right">{row.title_en}</TableCell>
                                 <TableCell align="right">{row.title_hi}</TableCell>
-                                <TableCell align="right">{row.last_date_time}</TableCell>
+                                <TableCell align="right">{new Intl.DateTimeFormat("en-US", {
+                                    year: "numeric",
+                                    month: "2-digit", // or "short", "numeric", "2-digit", etc. based on your preference
+                                    day: "numeric",
+                                    hour: "numeric",
+                                    minute: "numeric",
+                                    // second: "numeric",
+                                    // timeZoneName: "short", // or "long", "short", "none", etc.
+                                }).format(new Date(row.last_date_time))}</TableCell>
                                 <TableCell align="right">{row.remarks}</TableCell>
                                 <TableCell align="right">
                                     <a href={row.attachment_link}>Link</a>

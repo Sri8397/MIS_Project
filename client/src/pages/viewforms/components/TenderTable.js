@@ -110,14 +110,14 @@ const Component1 = () => {
         requestBody.append('last_date_time', formData.last_date_time);
         requestBody.append('remarks', formData.remarks);
         requestBody.append('tender_number', formData.tender_number);
-        
+
         console.log(requestBody.forEach((item) => console.log(item)));
         try {
             const res = await axios.post(`http://localhost:8000/api/tenders/${formData.id}`, requestBody, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
-            }); 
+            });
             fetchData();
 
         } catch (e) {
@@ -131,60 +131,71 @@ const Component1 = () => {
     };
 
     return (
-        <div>
-            <h2>Notices</h2>
-            <TableContainer component={Paper}>
-                <Table className={classes.table} aria-label="simple table">
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>Tender Number</TableCell>
-                            <TableCell align="right">Intender Email</TableCell>
-                            <TableCell align="right">English Desc</TableCell>
-                            <TableCell align="right">Hindi Desc</TableCell>
-                            <TableCell align="right">Display End date</TableCell>
-                            <TableCell align="right">Remarks</TableCell>
-                            <TableCell align="right">Link attached</TableCell>
-                            <TableCell align="right">Actions</TableCell>
-                            <TableCell align="center">Delete</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {sortedModifiedData.map((row) => (
-                            <TableRow key={row.id}>
-                                <TableCell component="th" scope="row">
-                                    {row.tender_number}
-                                </TableCell>
-                                <TableCell align="right">{row.intender_email}</TableCell>
-                                <TableCell align="right">{row.brief_description_en}</TableCell>
-                                <TableCell align="right">{row.brief_description_hi}</TableCell>
-                                <TableCell align="right">{row.last_date_time}</TableCell>
-                                <TableCell align="right">{row.remarks}</TableCell>
-                                <TableCell align="right">
-                                    <a href={row.attachment_link}>Link</a>
-                                </TableCell>
-                                <TableCell align="right">
-                                    <Button
-                                        variant="contained"
-                                        color="primary"
-                                        onClick={() => handleOpen(row)} // Pass the row data to handleEdit function
-                                    >
-                                        Edit
-                                    </Button>
-                                </TableCell>
-                                <TableCell align="right">
-                                    <Button
-                                        variant="contained"
-                                        color="primary"
-                                        onClick={() => handleDelete(row)} // Pass the row data to handleDelete function
-                                    >
-                                        Delete
-                                    </Button>
-                                </TableCell>
+        <div style={{ height: "60vh" }}>
+            <h2>Tenders</h2>
+            <div>
+                <TableContainer style={{ height: "100%" }} component={Paper}>
+                    <Table className={classes.table} aria-label="simple table">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>Tender Number</TableCell>
+                                <TableCell align="right">Intender Email</TableCell>
+                                <TableCell align="right">English Desc</TableCell>
+                                <TableCell align="right">Hindi Desc</TableCell>
+                                <TableCell align="right">Display End date</TableCell>
+                                <TableCell align="right">Remarks</TableCell>
+                                <TableCell align="right">Link attached</TableCell>
+                                <TableCell align="right">Actions</TableCell>
+                                <TableCell align="center">Delete</TableCell>
                             </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
+                        </TableHead>
+                        <TableBody>
+                            {sortedModifiedData.map((row) => (
+                                <TableRow key={row.id}>
+                                    <TableCell component="th" scope="row">
+                                        {row.tender_number}
+                                    </TableCell>
+                                    <TableCell align="right">{row.intender_email}</TableCell>
+                                    <TableCell align="right">{row.brief_description_en}</TableCell>
+                                    <TableCell align="right">{row.brief_description_hi}</TableCell>
+                                    <TableCell align="right">{new Intl.DateTimeFormat("en-US", {
+                                        year: "numeric",
+                                        month: "long", // or "short", "numeric", "2-digit", etc. based on your preference
+                                        day: "numeric",
+                                        hour: "numeric",
+                                        minute: "numeric",
+                                        second: "numeric",
+                                        timeZoneName: "short", // or "long", "short", "none", etc.
+                                    }).format(new Date(row.last_date_time))}</TableCell>
+                                    <TableCell align="right">{row.remarks}</TableCell>
+                                    <TableCell align="right">
+                                        <a href={row.attachment_link}>Link</a>
+                                    </TableCell>
+                                    <TableCell align="right">
+                                        <Button
+                                            variant="contained"
+                                            color="primary"
+                                            onClick={() => handleOpen(row)} // Pass the row data to handleEdit function
+                                        >
+                                            Edit
+                                        </Button>
+                                    </TableCell>
+                                    <TableCell align="right">
+                                        <Button
+                                            variant="contained"
+                                            color="primary"
+                                            onClick={() => handleDelete(row)} // Pass the row data to handleDelete function
+                                        >
+                                            Delete
+                                        </Button>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            </div>
+
             <Modal
                 style={{ display: "flex", justifyContent: "center", alignItems: "center" }}
                 open={open}

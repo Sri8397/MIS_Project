@@ -47,7 +47,7 @@ const Component1 = () => {
         try {
             const res = await axios.get('http://localhost:8000/api/department-sections');
             setElements(res.data.data);
-            
+
             // const response = await axios.get('http://localhost:8000/api/notices');
             const response = await axios.get('http://localhost:8000/api/office-orders');
             const modifiedData = response.data.data.map(notice => {
@@ -67,7 +67,7 @@ const Component1 = () => {
 
     // Sort sample data based on priority and then time uploaded
     const sortedModifiedData = data.sort((a, b) => {
-            return new Date(a.timeUploaded) - new Date(b.timeUploaded); 
+        return new Date(a.timeUploaded) - new Date(b.timeUploaded);
     });
 
     const handleOpen = (rowData) => {
@@ -130,7 +130,7 @@ const Component1 = () => {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
-            }); 
+            });
             fetchData()
         } catch (e) {
             console.log(e)
@@ -143,9 +143,9 @@ const Component1 = () => {
     };
 
     return (
-        <div>
-            <h2>Notices</h2>
-            <TableContainer component={Paper}>
+        <div style={{ height: "60vh" }}>
+            <h2>Office Orders</h2>
+            <TableContainer style={{ height: "100%" }} component={Paper}>
                 <Table className={classes.table} aria-label="simple table">
                     <TableHead>
                         <TableRow>
@@ -169,7 +169,15 @@ const Component1 = () => {
                                 <TableCell align="right">{row.department_name}</TableCell>
                                 <TableCell align="right">{row.title_en}</TableCell>
                                 <TableCell align="right">{row.title_hi}</TableCell>
-                                <TableCell align="right">{row.last_date_time}</TableCell>
+                                <TableCell align="right">{new Intl.DateTimeFormat("en-US", {
+                                    year: "numeric",
+                                    month: "2-digit", // or "short", "numeric", "2-digit", etc. based on your preference
+                                    day: "numeric",
+                                    hour: "numeric",
+                                    minute: "numeric",
+                                    // second: "numeric",
+                                    // timeZoneName: "short", // or "long", "short", "none", etc.
+                                }).format(new Date(row.last_date_time))}</TableCell>
                                 <TableCell align="right">{row.remarks}</TableCell>
                                 <TableCell align="right">
                                     <a href={row.attachment_link}>Link</a>
@@ -197,14 +205,16 @@ const Component1 = () => {
                     </TableBody>
                 </Table>
             </TableContainer>
+
+
             <Modal
-                style={{display: "flex", justifyContent: "center", alignItems: "center"}}
+                style={{ display: "flex", justifyContent: "center", alignItems: "center" }}
                 open={open}
                 onClose={handleClose}
                 closeAfterTransition
             >
                 <Fade in={open}>
-                    <div style={{margin:"0 15vh", padding: "3vh",borderRadius: "5px" ,backgroundColor: "white", boxShadow: "inherit", outline: "none", minWidth: "50%", minHeight:"50%"}}>
+                    <div style={{ margin: "0 15vh", padding: "3vh", borderRadius: "5px", backgroundColor: "white", boxShadow: "inherit", outline: "none", minWidth: "50%", minHeight: "50%" }}>
                         <FormControl fullWidth margin="normal">
                             <InputLabel>Section/Department</InputLabel>
                             <Select
