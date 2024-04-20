@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import {
   Typography,
   TextField,
@@ -11,53 +10,13 @@ import {
   Checkbox,
   Modal,
   FormControlLabel,
-} from '@material-ui/core';
+} from '@mui/material';
 import UploadArea from '../components/uploadArea';
 import axios from 'axios';
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    maxWidth: 600,
-    margin: 'auto',
-    padding: theme.spacing(2),
-  },
-  form: {
-    '& .MuiTextField-root': {
-      marginBottom: theme.spacing(2),
-    },
-    '& .MuiFormControl-root': {
-      marginBottom: theme.spacing(2),
-    },
-    '& .MuiPaper-root': {
-      padding: theme.spacing(2),
-      marginBottom: theme.spacing(2),
-    },
-    '& .MuiButton-root': {
-      marginRight: theme.spacing(2),
-    },
-  },
-  buttonGroup: {
-    marginTop: theme.spacing(2),
-  },
-  errorText: {
-    color: 'red',
-    marginBottom: theme.spacing(2),
-  },
-  modal: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  paper: {
-    backgroundColor: theme.palette.background.paper,
-    border: '2px solid #000',
-    boxShadow: theme.shadows[5],
-    padding: theme.spacing(2, 4, 3),
-  },
-}));
+
 
 const TendersMain = () => {
-  const classes = useStyles();
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     tenderNumber: '',
@@ -220,18 +179,18 @@ const closeModal = () => {
   setOpenModal(false); // Close modal
 };
   return (
-    <div className={classes.root}>
-      <Typography variant="h4" gutterBottom>
+    <div style={{ maxWidth: '600px', margin: '0 auto' }}>
+      <Typography variant="h4" gutterBottom style={{textAlign :'center', marginBottom: '50px'}}>
         Tenders Page
       </Typography>
-      <form className={classes.form}>
-        {errorMessage && (
-          <Typography className={classes.errorText}>{errorMessage}</Typography>
-        )}
-        {/* Form steps */}
+      <form >
+      {errorMessage && (
+        <Typography style={{color: 'red'}}>{errorMessage}</Typography>
+      )}
+        
         {step === 1 && (
           <div>
-            <Typography variant="h6">Tender Number</Typography>
+            <Typography variant="h6" style={{marginBottom: '20px'}}>Section/Department</Typography>
             <TextField
               fullWidth
               variant="outlined"
@@ -240,9 +199,10 @@ const closeModal = () => {
               value={formData.tenderNumber}
               onChange={handleChange}
               required
+              style={{marginBottom: '50px'}}
               />
-            <Typography variant="h6">Select Category</Typography>
-            <FormControl fullWidth variant="outlined">
+            <Typography variant="h6" style={{marginBottom: '20px'}}>Select Category</Typography>
+            <FormControl fullWidth variant="outlined" >
               <InputLabel>Category</InputLabel>
               <Select
                 label="Category"
@@ -273,6 +233,7 @@ const closeModal = () => {
       value={formData.englishDesc}
       onChange={handleChange}
       required
+      style={{marginBottom: '16px'}}
     />
     <Typography variant="h6"> संक्षिप्त विवरण </Typography>
     <TextField
@@ -290,7 +251,7 @@ const closeModal = () => {
         }
         {step === 3 && (
           <div>
-            <Typography variant="h6">Last Date/Time</Typography>
+            <Typography variant="h6" style={{marginBottom:'20px'}}>Last Date/Time</Typography>
             <TextField
               fullWidth
               type="datetime-local"
@@ -299,8 +260,9 @@ const closeModal = () => {
               value={formData.lastDate}
               onChange={handleChange}
               required
+              style={{marginBottom: '50px'}}
             />
-            <Typography variant="h6">Indenter's Email</Typography>
+            <Typography variant="h6" style={{marginBottom:'20px'}}>Indenter's Email</Typography>
              <TextField
               fullWidth
               variant="outlined"
@@ -312,90 +274,112 @@ const closeModal = () => {
               />
           </div>
         )}
-        {step === 4 && (
-          <div>
-            <Typography variant="h6">Attachment and Remarks (if Any)</Typography>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  color="primary"
-                  checked={formData.attachmentRequired}
+            {step === 4 && (
+        <div>
+          <Typography variant="h6">Attachment and Remarks (if Any)</Typography>
+          <FormControlLabel
+            control={
+              <Checkbox
+                color="primary"
+                checked={formData.attachmentRequired}
+                onChange={handleChange}
+                name="attachmentRequired"
+              />
+            }
+            label="If Attachment required"
+            style={{ marginBottom: '16px' }} 
+          />
+          {formData.attachmentRequired && (
+            <>
+              <FormControl fullWidth style={{ marginBottom: '16px' }}> 
+                <InputLabel>Attachment Type</InputLabel>
+                <Select
+                  label="Attachment Type"
+                  name="attachmentType"
+                  value={formData.attachmentType}
                   onChange={handleChange}
-                  name="attachmentRequired"
+                >
+                  <MenuItem value="upload">Upload</MenuItem>
+                  <MenuItem value="link">Link</MenuItem>
+                </Select>
+              </FormControl>
+              {formData.attachmentType === 'upload' && (
+                <UploadArea files={files} setFiles={setFiles} setErrorMessage={setErrorMessage} />
+              )}
+              {formData.attachmentType === 'link' && (
+                <TextField
+                  fullWidth
+                  variant="outlined"
+                  label="Attachment Link"
+                  name="attachmentLink"
+                  value={formData.attachmentLink}
+                  onChange={handleChange}
+                  required
+                  style={{ marginBottom: '16px' }}
                 />
-              }
-              label="If Attachment required"
-            />
-            {formData.attachmentRequired && (
-              <>
-                <FormControl fullWidth variant="outlined">
-                  <InputLabel>Attachment Type</InputLabel>
-                  <Select
-                    label="Attachment Type"
-                    name="attachmentType"
-                    value={formData.attachmentType}
-                    onChange={handleChange}
-                  >
-                    <MenuItem value="upload">Upload</MenuItem>
-                    <MenuItem value="link">Link</MenuItem>
-                  </Select>
-                </FormControl>
-                {formData.attachmentType === 'upload' && (
-                  <UploadArea files = {files} setFiles = {setFiles} setErrorMessage={setErrorMessage}/>
-                )}
-                {formData.attachmentType === 'link' && (
-                  <TextField
-                    fullWidth
-                    variant="outlined"
-                    label="Attachment Link"
-                    name="attachmentLink"
-                    value={formData.attachmentLink}
-                    onChange={handleChange}
-                    required
-                  />
-                )}
-              </>
-            )}
-            <TextField
-              fullWidth
-              variant="outlined"
-              label="Remarks"
-              name="remarks"
-              value={formData.remarks}
-              onChange={handleChange}
-            />
-          </div>
-        )}
-        <Modal
-          className={classes.modal}
-          open={openModal}
-          onClose={closeModal}
-          aria-labelledby="simple-modal-title"
-          aria-describedby="simple-modal-description"
-        >
-          <div className={classes.paper}>
-            <Typography variant="h6" id="modal-title">
-              {dialogBoxData}
-            </Typography>
-            <Button variant="contained" color="primary" onClick={closeModal}>
-              Close
-            </Button>
-          </div>
-        </Modal>
+              )}
+            </>
+          )}
+
+          <TextField
+            fullWidth
+            variant="outlined"
+            label="Remarks"
+            name="remarks"
+            value={formData.remarks}
+            onChange={handleChange}
+            style={{ marginTop: '16px', marginBottom: '16px' }}
+          />
+        </div>
+      )}
+  <Modal
+  open={openModal}
+  onClose={closeModal}
+  aria-labelledby="simple-modal-title"
+  aria-describedby="simple-modal-description"
+  style={{
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  }}
+>
+  <div style={{
+    backgroundColor: '#fff',
+    borderRadius: '8px',
+    padding: '24px',
+    maxWidth: '400px',
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+  }}>
+   <Typography variant="h6" id="modal-title" style={{ marginBottom: '16px', color:'black' }}>
+      {dialogBoxData}
+    </Typography>
+    <Button
+      variant="contained"
+      color="primary"
+      onClick={closeModal}
+      style={{ alignSelf: 'flex-end' }}
+    >
+      Close
+    </Button>
+  </div>
+</Modal>
+
         {/* Buttons */}
-        <div className={classes.buttonGroup}>
+        <div style={{ marginTop: '16px', textAlign: 'right' }}>
           {step > 1 && (
-            <Button variant="contained" color="primary" onClick={prevStep}>
+            <Button variant="contained" color="primary" onClick={prevStep}style = {{marginTop: '20px', marginRight:'8px'}}>
               Previous
             </Button>
           )}
           {step < 4 && (
-            <Button variant="contained" color="primary" onClick={nextStep}>
+            <Button variant="contained" color="primary" onClick={nextStep} style = {{marginTop: '20px'}}>
               Next
             </Button>
           )}
           {step === 4 && (
-            <Button variant="contained" color="primary" onClick={submitForm}>
+            <Button variant="contained" color="primary" onClick={submitForm}style = {{marginTop: '20px'}}>
               Submit
             </Button>
           )}

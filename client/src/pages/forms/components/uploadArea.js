@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Grid, Typography, Button } from '@material-ui/core';
+import { Grid, Typography, Button } from '@mui/material';
 import { useDropzone } from 'react-dropzone';
 
 function UploadArea({ files, setFiles, setErrorMessage }) {
@@ -31,7 +31,7 @@ function UploadArea({ files, setFiles, setErrorMessage }) {
         </ul>
       </Grid>
       <Grid item xs={12} style={{ textAlign: 'center' }}>
-        <Button variant="contained" color="secondary" onClick={clearFiles}>
+        <Button variant="contained" color="primary" onClick={clearFiles}>
           Clear
         </Button>
       </Grid>

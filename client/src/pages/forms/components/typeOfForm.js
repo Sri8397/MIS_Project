@@ -1,78 +1,43 @@
 import React from 'react';
-import { Grid, Paper, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { Description, Notifications, Assignment } from '@material-ui/icons'; // Import Material-UI icons
+import {Button, Paper, Grid, Typography} from '@mui/material';
 
-const useStyles = makeStyles((theme) => ({
-  container: {
-    height: '65vh', // Set container height to full viewport height
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  paper: {
-    padding: theme.spacing(3),
-    cursor: 'pointer',
-    transition: 'transform 0.2s',
-    borderRadius: theme.spacing(2),
-    textAlign: 'center',
-    '&:hover': {
-      transform: 'scale(1.05)',
-    },
-  },
-  selectedPaper: {
-    backgroundColor: theme.palette.secondary.main,
-    color: theme.palette.secondary.contrastText,
-    '&:hover': {
-      transform: 'scale(1)',
-    },
-  },
-  icon: {
-    fontSize: 48,
-    marginBottom: theme.spacing(2),
-  },
-  title: {
-    marginBottom: theme.spacing(1),
-  },
-}));
+
 
 function TypeOfForm({ handleOptionSelect }) {
-  const classes = useStyles();
 
   const options = [
-    { id: 1, title: 'officeOrders', description: 'Form for office orders', icon: <Assignment className={classes.icon} /> },
-    { id: 2, title: 'notices', description: 'Form for notices', icon: <Notifications className={classes.icon} /> },
-    { id: 3, title: 'tenders', description: 'Form for tenders', icon: <Description className={classes.icon} /> },
+    { id: 1, title: 'OfficeOrders', description: 'Form for office orders', },
+    { id: 2, title: 'Notices', description: 'Form for notices',  },
+    { id: 3, title: 'Tenders', description: 'Form for tenders', },
   ];
 
   const [selectedOption, setSelectedOption] = React.useState(null);
 
   const handleClick = (option) => {
     setSelectedOption(option.title === selectedOption ? null : option.title);
-    handleOptionSelect(option.title);
+    handleOptionSelect(option.title.toLocaleLowerCase());
   };
 
   return (
-    <div className={classes.container}>
-      <Grid container spacing={3} style={{ justifyContent: 'center' }}>
-        {options.map((option) => (
-          <Grid item key={option.id} xs={12} sm={6} md={4} lg={3}>
-            <Paper
-              elevation={3}
-              className={`${classes.paper} ${
-                option.title === selectedOption ? classes.selectedPaper : ''
-              }`}
-              onClick={() => handleClick(option)}
-            >
-              {option.icon}
-              <Typography variant="h6" className={classes.title}>
-                {option.title.toLocaleLowerCase()}
-              </Typography>
-              <Typography variant="body2">{option.description}</Typography>
-            </Paper>
-          </Grid>
-        ))}
-      </Grid>
+    <div>
+     <Grid container spacing={3} style={{ justifyContent: 'center' }}>
+  {options.map((option) => (
+    <Grid item key={option.id} xs={12} sm={6} md={4} lg={3}>
+      <Paper
+        onClick={() => handleClick(option)}
+        style={{ cursor: 'pointer', padding: '20px', textAlign: 'center', boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)' }}
+      >
+        {option.icon}
+        <Typography variant="h6" style={{ marginTop: '10px', marginBottom: '5px' }}>
+          {option.title}
+        </Typography>
+        <Typography variant="body2" style={{ color: 'rgba(0, 0, 0, 0.7)' }}>{option.description}</Typography>
+      </Paper>
+    </Grid>
+  ))}
+</Grid>
+
     </div>
   );
 }
