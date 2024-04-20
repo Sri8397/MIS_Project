@@ -8,13 +8,14 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use App\Traits\PDFControllerTrait;
 use Illuminate\Support\Facades\Date;
+use Illuminate\Support\Str;
 use Exception;
 
 class OfficeOrderController extends Controller
 {
 
     use PDFControllerTrait;
-    
+
     public function index()
     {
         $officeOrders = OfficeOrder::all();
@@ -35,7 +36,15 @@ class OfficeOrderController extends Controller
 
             // If attachment is present, generate a clickable link for it
             if ($officeOrder->attachment) {
-                $data['attachment_link'] = route('office-orders.pdf', ['id' => $officeOrder->id]);
+                // Extract filename from the original attachment link
+                $filename = Str::afterLast($officeOrder->attachment, '/');
+
+                // Generate the attachment link with the desired format
+                $attachmentLink = Str::beforeLast($filename, '_') . '.pdf';
+
+                // Append the attachment link to the existing route
+                $data['attachment_link'] = route('office-orders.pdf', ['id' => $officeOrder->id, 'filename' => $attachmentLink]);
+
             } else if ($officeOrder->attachment_link) {
                 $data['attachment_link'] = $officeOrder->attachment_link;
             }
@@ -67,8 +76,15 @@ class OfficeOrderController extends Controller
         ];
 
         // If attachment is present, generate a clickable link for it
-        if ($officeOrder->attachment) {
-            $data['attachment_link'] = route('office-orders.pdf', ['id' => $officeOrder->id]);
+        if ($officeOrder->attachment) {// Extract filename from the original attachment link
+            $filename = Str::afterLast($officeOrder->attachment, '/');
+
+            // Generate the attachment link with the desired format
+            $attachmentLink = Str::beforeLast($filename, '_') . '.pdf';
+
+            // Append the attachment link to the existing route
+            $data['attachment_link'] = route('office-orders.pdf', ['id' => $officeOrder->id, 'filename' => $attachmentLink]);
+
         } else if ($officeOrder->attachment_link) {
             $data['attachment_link'] = $officeOrder->attachment_link;
         }

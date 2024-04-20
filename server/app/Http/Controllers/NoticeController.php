@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Traits\PDFControllerTrait;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class NoticeController extends Controller
 {
@@ -33,7 +34,15 @@ class NoticeController extends Controller
 
             // If attachment is present, generate a clickable link for it
             if ($notice->attachment) {
-                $data['attachment_link'] = route('notices.pdf', ['id' => $notice->id]);
+                // Extract filename from the original attachment link
+                $filename = Str::afterLast($notice->attachment, '/');
+
+                // Generate the attachment link with the desired format
+                $attachmentLink = Str::beforeLast($filename, '_') . '.pdf';
+
+                // Append the attachment link to the existing route
+                $data['attachment_link'] = route('notices.pdf', ['id' => $notice->id, 'filename' => $attachmentLink]);
+
             } else if ($notice->attachment_link) {
                 $data['attachment_link'] = $notice->attachment_link;
             }
@@ -66,7 +75,15 @@ class NoticeController extends Controller
 
         // If attachment is present, generate a clickable link for it
         if ($notice->attachment) {
-            $data['attachment_link'] = route('notices.pdf', ['id' => $notice->id]);
+            // Extract filename from the original attachment link
+            $filename = Str::afterLast($notice->attachment, '/');
+
+            // Generate the attachment link with the desired format
+            $attachmentLink = Str::beforeLast($filename, '_') . '.pdf';
+
+            // Append the attachment link to the existing route
+            $data['attachment_link'] = route('notices.pdf', ['id' => $notice->id, 'filename' => $attachmentLink]);
+
         } else if ($notice->attachment_link) {
             $data['attachment_link'] = $notice->attachment_link;
         }
@@ -80,7 +97,7 @@ class NoticeController extends Controller
             'title_en' => 'required|max:255',
             'title_hi' => 'required|max:255',
             'last_date_time' => 'required|date',
-            'attachment' => 'nullable|file|mimes:pdf|max:2048',
+            'attachment' => 'nullable|file|mimes:pdf|max:5120',
             'attachment_link' => 'nullable|url',
             'remarks' => 'nullable|string',
             'department_section_id' => 'required|exists:department_sections,id',
@@ -142,8 +159,6 @@ class NoticeController extends Controller
         // Handle file upload
         if ($request->hasFile('attachment')) {
             // Delete previous attachment if exists
-            echo "Previous attachment exits: " . $notice->attachment . PHP_EOL;
-
             if ($notice->attachment) {
                 Storage::delete($notice->attachment);
             }
