@@ -1,21 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-import Modal from '@material-ui/core/Modal';
-import Backdrop from '@material-ui/core/Backdrop';
-import Fade from '@material-ui/core/Fade';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import FormControl from '@material-ui/core/FormControl'; // Add this import
-import InputLabel from '@material-ui/core/InputLabel'; // Add this import
-import Select from '@material-ui/core/Select'; // Add this import
-import MenuItem from '@material-ui/core/MenuItem'; // Add this import
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
+import Modal from '@mui/material/Modal';
+import Backdrop from '@mui/material/Backdrop';
+import Fade from '@mui/material/Fade';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
 // import UploadArea from '../components/uploadArea';
 import UploadArea from '../../forms/components/uploadArea';
 
@@ -23,27 +22,9 @@ import UploadArea from '../../forms/components/uploadArea';
 import axios from "axios"
 import { setDate } from 'date-fns';
 
-const useStyles = makeStyles((theme) => ({
-    table: {
-        minWidth: 650,
-    },
-    modal: {
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    paper: {
-        backgroundColor: theme.palette.background.paper,
-        boxShadow: theme.shadows[5],
-        padding: theme.spacing(2, 4, 3),
-        outline: 'none',
-        minWidth: '50%',
-        minHeight: '50%',
-    },
-}));
 
 const Component1 = () => {
-    const classes = useStyles();
+    const classes = {}
     const [open, setOpen] = useState(false);
     const [data, setData] = useState([])
     const [options, setOptions] = useState([]);

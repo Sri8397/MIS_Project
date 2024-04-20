@@ -16,7 +16,7 @@ class TenderController extends Controller
 
     public function index()
     {
-        $tenders = Tender::all();
+        $tenders = Tender::orderBy('updated_at', 'desc')->get();
 
         $tendersData = [];
 
