@@ -8,6 +8,7 @@ use App\Traits\PDFControllerTrait;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class TenderController extends Controller
 {
@@ -35,7 +36,14 @@ class TenderController extends Controller
 
             // If attachment is present, generate a clickable link for it
             if ($tender->attachment) {
-                $data['attachment_link'] = route('tenders.pdf', ['id' => $tender->id]);
+                // Extract filename from the original attachment link
+                $filename = Str::afterLast($tender->attachment, '/');
+
+                // Generate the attachment link with the desired format
+                $attachmentLink = Str::beforeLast($filename, '_') . '.pdf';
+
+                // Append the attachment link to the existing route
+                $data['attachment_link'] = route('tenders.pdf', ['id' => $tender->id, 'filename' => $attachmentLink]);
             } else if ($tender->attachment_link) {
                 $data['attachment_link'] = $tender->attachment_link;
             }
@@ -46,44 +54,6 @@ class TenderController extends Controller
         return response()->json(['data' => $tendersData], 200);
     }
 
-    public function store(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'tender_number' => 'required|integer|unique:tenders',
-            'category_id' => 'required|exists:categories,id',
-            'brief_description_en' => 'required|max:255',
-            'brief_description_hi' => 'required|max:255',
-            'last_date_time' => [
-                'required',
-                'date',
-                'after_or_equal:' . Date::now()->addDays(2)->toDateString(),
-            ],
-            'intender_email' => 'required|email',
-            'attachment' => 'nullable|file|mimes:pdf|max:5120',
-            'attachment_link' => 'nullable|url',
-            'remarks' => 'nullable|string',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => 422,
-                'errors' => $validator->messages(),
-                'message' => 'validation failed',
-            ], 422);
-        }
-
-        // Handle file upload
-        if ($request->hasFile('attachment')) {
-            $file = $request->file('attachment');
-            $fileName = uniqid() . '_' . $file->getClientOriginalName();
-            $path = $file->storeAs('pdfs/office-tenders', $fileName);
-            $request['attachment'] = $path;
-        }
-
-        $tender = Tender::create($request->all());
-
-        return response()->json(['message' => 'Tender created successfully', 'data' => $tender], 201);
-    }
 
     public function show($id)
     {
@@ -108,13 +78,64 @@ class TenderController extends Controller
 
         // If attachment is present, generate a clickable link for it
         if ($tender->attachment) {
-            $data['attachment_link'] = route('tenders.pdf', ['id' => $tender->id]);
+            // $data['attachment_link'] = route('tenders.pdf', ['id' => $tender->id]);
+
+            // Extract filename from the original attachment link
+            $filename = Str::afterLast($tender->attachment, '/');
+
+            // Generate the attachment link with the desired format
+            $attachmentLink = Str::beforeLast($filename, '_') . '.pdf';
+
+            // Append the attachment link to the existing route
+            $data['attachment_link'] = route('tenders.pdf', ['id' => $tender->id, 'filename' => $attachmentLink]);
         } else if ($tender->attachment_link) {
             $data['attachment_link'] = $tender->attachment_link;
         }
 
         return response()->json(['data' => $data], 200);
     }
+
+    public function store(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'tender_number' => 'required|integer|unique:tenders',
+            'category_id' => 'required|exists:categories,id',
+            'brief_description_en' => 'required|max:255',
+            'brief_description_hi' => 'required|max:255',
+            'last_date_time' => [
+                'required',
+                'date',
+                'after_or_equal:' . Date::now()->addDays(2)->toDateString(),
+            ],
+            'intender_email' => 'required|email',
+            'attachment' => 'nullable|file|mimes:pdf|max:5120',
+            'attachment_link' => 'nullable|url',
+            'remarks' => 'nullable|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 422,
+                'errors' => $validator->messages(),
+                'message' => 'Validation failed',
+            ], 422);
+        }
+
+        $validatedData = $validator->validated();
+
+        // Handle file upload
+        if ($request->hasFile('attachment')) {
+            $file = $request->file('attachment');
+            $fileName = uniqid() . '_' . $file->getClientOriginalName();
+            $path = $file->storeAs('pdfs/office-tenders', $fileName);
+            $validatedData['attachment'] = $path;
+        }
+
+        $tender = Tender::create($validatedData);
+
+        return response()->json(['message' => 'Tender created successfully', 'data' => $tender], 201);
+    }
+
 
     public function update(Request $request, $id)
     {
@@ -140,14 +161,16 @@ class TenderController extends Controller
             'attachment_link' => 'nullable|url',
             'remarks' => 'nullable|string',
         ]);
-    
+
         if ($validator->fails()) {
             return response()->json([
                 'status' => 422,
                 'errors' => $validator->messages(),
-                'message' => 'validation failed',
+                'message' => 'Validation failed',
             ], 422);
         }
+
+        $validatedData = $validator->validated();
 
         // Handle file upload
         if ($request->hasFile('attachment')) {
@@ -159,13 +182,14 @@ class TenderController extends Controller
             $file = $request->file('attachment');
             $fileName = uniqid() . '_' . $file->getClientOriginalName();
             $path = $file->storeAs('pdfs/tenders', $fileName);
-            $request['attachment'] = $path;
+            $validatedData['attachment'] = $path;
         }
 
-        $tender->update($request->all());
+        $tender->update($validatedData);
 
         return response()->json(['message' => 'Tender updated successfully', 'data' => $tender], 200);
     }
+
 
     public function destroy($id)
     {

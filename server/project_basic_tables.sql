@@ -447,33 +447,18 @@ VALUES
     ('Food & Groceries', 'Includes food items and groceries', NOW(), NOW()),
     ('Pets & Animals', 'Includes pet supplies and accessories', NOW(), NOW());
 
-
--- Create the tenders table
 CREATE TABLE tenders (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    tender_number INT NOT NULL,
-    category_id INT NOT NULL,
-    brief_description_en VARCHAR(255) NOT NULL,
-    brief_description_hi VARCHAR(255) NOT NULL,
-    last_date_time DATETIME NOT NULL,
-    intender_email VARCHAR(255) NOT NULL,
-    remarks TEXT,
+    tender_number INT UNIQUE,
+    category_id INT,
+    brief_description_en VARCHAR(255),
+    brief_description_hi VARCHAR(255),
+    last_date_time DATETIME,
+    intender_email VARCHAR(255),
+    attachment VARCHAR(255),
     attachment_link VARCHAR(255),
+    remarks TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (category_id) REFERENCES categories(id)
 );
-
--- Insert sample data into the tenders table
-INSERT INTO tenders (tender_number, category_id, brief_description_en, brief_description_hi, last_date_time, intender_email, remarks, attachment_link) VALUES
-(12345, 1, 'Sample Tender Description in English 1', 'Sample Tender Description in Hindi 1', '2024-04-30 23:59:59', 'example1@example.com', 'Sample remarks for Tender 1', 'https://example.com/attachment1.pdf'),
-(54321, 2, 'Sample Tender Description in English 2', 'Sample Tender Description in Hindi 2', '2024-05-15 23:59:59', 'example2@example.com', 'Sample remarks for Tender 2', 'https://example.com/attachment2.pdf'),
-(98765, 3, 'Sample Tender Description in English 3', 'Sample Tender Description in Hindi 3', '2024-05-20 23:59:59', 'example3@example.com', 'Sample remarks for Tender 3', 'https://example.com/attachment3.pdf'),
-(24680, 1, 'Sample Tender Description in English 4', 'Sample Tender Description in Hindi 4', '2024-05-25 23:59:59', 'example4@example.com', 'Sample remarks for Tender 4', 'https://example.com/attachment4.pdf'),
-(13579, 2, 'Sample Tender Description in English 5', 'Sample Tender Description in Hindi 5', '2024-06-01 23:59:59', 'example5@example.com', 'Sample remarks for Tender 5', 'https://example.com/attachment5.pdf'),
-(11223, 3, 'Sample Tender Description in English 6', 'Sample Tender Description in Hindi 6', '2024-06-10 23:59:59', 'example6@example.com', 'Sample remarks for Tender 6', 'https://example.com/attachment6.pdf'),
-(998877, 1, 'Sample Tender Description in English 7', 'Sample Tender Description in Hindi 7', '2024-06-15 23:59:59', 'example7@example.com', 'Sample remarks for Tender 7', 'https://example.com/attachment7.pdf'),
-(665544, 2, 'Sample Tender Description in English 8', 'Sample Tender Description in Hindi 8', '2024-06-20 23:59:59', 'example8@example.com', 'Sample remarks for Tender 8', 'https://example.com/attachment8.pdf'),
-(443322, 3, 'Sample Tender Description in English 9', 'Sample Tender Description in Hindi 9', '2024-06-25 23:59:59', 'example9@example.com', 'Sample remarks for Tender 9', 'https://example.com/attachment9.pdf'),
-(778899, 1, 'Sample Tender Description in English 10', 'Sample Tender Description in Hindi 10', '2024-06-30 23:59:59', 'example10@example.com', 'Sample remarks for Tender 10', 'https://example.com/attachment10.pdf');
-

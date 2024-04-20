@@ -74,7 +74,7 @@ Route::prefix('office-orders')->group(function () {
     Route::get('{id}', [OfficeOrderController::class, 'show']);
     Route::post('{id}', [OfficeOrderController::class, 'update']);
     Route::delete('{id}', [OfficeOrderController::class, 'destroy']);
-    Route::get('{id}/pdf', function ($id) {
+    Route::get('{id}/pdf/{filename}', function ($id) {
         return (new OfficeOrderController)->servePDF(OfficeOrder::class, $id);
     })->name('office-orders.pdf');
 });
@@ -86,7 +86,7 @@ Route::prefix('tenders')->group(function () {
     Route::get('{id}', [TenderController::class, 'show']);
     Route::post('{id}', [TenderController::class, 'update']);
     Route::delete('{id}', [TenderController::class, 'destroy']);
-    Route::get('{id}/pdf', function ($id) {
+    Route::get('{id}/pdf/{filename}', function ($id) {
         return (new TenderController)->servePDF(Tender::class, $id);
     })->name('tenders.pdf');
 });
@@ -98,7 +98,7 @@ Route::prefix('notices')->group(function () {
     Route::get('{id}', [NoticeController::class, 'show']);
     Route::post('{id}', [NoticeController::class, 'update']);
     Route::delete('{id}', [NoticeController::class, 'destroy']);
-    Route::get('{id}/pdf', function ($id) {
+    Route::get('{id}/pdf/{filename}', function ($id) {
         return (new NoticeController)->servePDF(Notice::class, $id);
     })->name('notices.pdf');
 });
