@@ -155,7 +155,7 @@ const Component1 = () => {
                                 <TableCell align="right">{row.last_date_time}</TableCell>
                                 <TableCell align="right">{row.remarks}</TableCell>
                                 <TableCell align="right">
-                                    <a href={row.attachment_link}>PDF Link</a>
+                                    <a href={row.attachment_link}>Link</a>
                                 </TableCell>
                                 <TableCell align="right">
                                     <Button

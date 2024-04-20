@@ -201,7 +201,7 @@ const closeModal = () => {
 
   return (
     <div style={{ maxWidth: '600px', margin: '0 auto' }}> {/* Set max-width and center align */}
-    <Typography variant="h4" gutterBottom style={{textAlign :'center', marginBottom: '50px'}}>
+    <Typography variant="h4" gutterBottom style={{textAlign :'center', marginBottom: '50px', marginTop: '20px'}}>
       Notices Form
     </Typography>
     <form>

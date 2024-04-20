@@ -47,28 +47,22 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('GetBiometicAttendance', 'GetBiometicAttendance');
 });
 
-// Categories Routes
-Route::prefix('categories')->group(function () {
+
+Route::prefix('categories')->middleware('AuthCheck')->group(function () {
     Route::get('/', [CategoryController::class, 'index']);
     Route::post('/', [CategoryController::class, 'store']);
     Route::get('/{id}', [CategoryController::class, 'show']);
 });
 
-// Route::prefix('categories')->middleware('AuthCheck')->group(function () {
-//     Route::get('/', [CategoryController::class, 'index']);
-//     Route::post('/', [CategoryController::class, 'store']);
-//     Route::get('/{id}', [CategoryController::class, 'show']);
-// });
-
 // Department Sections Routes
-Route::prefix('department-sections')->group(function () {
+Route::prefix('department-sections')->middleware('AuthCheck')->group(function () {
     Route::get('', [DepartmentSectionController::class, 'index']);
     Route::post('', [DepartmentSectionController::class, 'store']);
     Route::get('{id}', [DepartmentSectionController::class, 'show']);
 });
 
 // Office Orders Routes
-Route::prefix('office-orders')->group(function () {
+Route::prefix('office-orders')->middleware('AuthCheck')->group(function () {
     Route::get('', [OfficeOrderController::class, 'index']);
     Route::post('', [OfficeOrderController::class, 'store']);
     Route::get('{id}', [OfficeOrderController::class, 'show']);
@@ -80,7 +74,7 @@ Route::prefix('office-orders')->group(function () {
 });
 
 // Tenders Routes
-Route::prefix('tenders')->group(function () {
+Route::prefix('tenders')->middleware('AuthCheck')->group(function () {
     Route::get('', [TenderController::class, 'index']);
     Route::post('', [TenderController::class, 'store']);
     Route::get('{id}', [TenderController::class, 'show']);
@@ -92,7 +86,7 @@ Route::prefix('tenders')->group(function () {
 });
 
 // Notices Routes
-Route::prefix('notices')->group(function () {
+Route::prefix('notices')->middleware('AuthCheck')->group(function () {
     Route::get('', [NoticeController::class, 'index']);
     Route::post('', [NoticeController::class, 'store']);
     Route::get('{id}', [NoticeController::class, 'show']);

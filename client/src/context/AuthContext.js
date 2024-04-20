@@ -42,7 +42,7 @@ const AuthProvider = ({ children }) => {
   const [useSession, setSession] = useState(defaultProvider.useSession)
   const [loading, setLoading] = useState(defaultProvider.loading)
 
-
+  
 
   // ** Hooks
   const router = useRouter()

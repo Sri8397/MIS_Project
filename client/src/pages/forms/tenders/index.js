@@ -31,6 +31,7 @@ const TendersMain = () => {
     attachmentFiles: [],
     remarks: ''
   });
+  const token = (localStorage.getItem('accessToken'));
   const [errorMessage, setErrorMessage] = useState(''); // State for error message
   const [openModal, setOpenModal] = useState(false);
   const [files, setFiles] = useState([]); // State for uploaded files
@@ -180,7 +181,7 @@ const closeModal = () => {
 };
   return (
     <div style={{ maxWidth: '600px', margin: '0 auto' }}>
-      <Typography variant="h4" gutterBottom style={{textAlign :'center', marginBottom: '50px'}}>
+      <Typography variant="h4" gutterBottom style={{textAlign :'center', marginBottom: '50px', marginTop: '20px'}}>
         Tenders Form
       </Typography>
       <form >
