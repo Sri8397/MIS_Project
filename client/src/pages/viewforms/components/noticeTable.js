@@ -140,7 +140,8 @@ const Component1 = () => {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
-            }); console.log("res", res);
+            }); 
+            console.log("res", res);
 
         } catch (e) {
             console.log(e)
