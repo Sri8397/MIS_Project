@@ -181,7 +181,7 @@ const closeModal = () => {
   return (
     <div style={{ maxWidth: '600px', margin: '0 auto' }}>
       <Typography variant="h4" gutterBottom style={{textAlign :'center', marginBottom: '50px'}}>
-        Tenders Page
+        Tenders Form
       </Typography>
       <form >
       {errorMessage && (
@@ -190,7 +190,7 @@ const closeModal = () => {
         
         {step === 1 && (
           <div>
-            <Typography variant="h6" style={{marginBottom: '20px'}}>Section/Department</Typography>
+            <Typography variant="h6" style={{marginBottom: '20px'}}>Tender Number</Typography>
             <TextField
               fullWidth
               variant="outlined"
