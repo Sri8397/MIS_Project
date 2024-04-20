@@ -18,7 +18,7 @@ class OfficeOrderController extends Controller
 
     public function index()
     {
-        $officeOrders = OfficeOrder::all();
+        $officeOrders = OfficeOrder::orderBy('updated_at', 'desc')->get();
 
         $officeOrdersData = [];
 

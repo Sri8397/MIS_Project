@@ -20,23 +20,31 @@ function TypeOfForm({ handleOptionSelect }) {
   };
 
   return (
-    <div>
+    <div style = {{position:'relative',top: '30%'}}>
      <Grid container spacing={3} style={{ justifyContent: 'center' }}>
-  {options.map((option) => (
-    <Grid item key={option.id} xs={12} sm={6} md={4} lg={3}>
-      <Paper
-        onClick={() => handleClick(option)}
-        style={{ cursor: 'pointer', padding: '20px', textAlign: 'center', boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)' }}
-      >
-        {option.icon}
-        <Typography variant="h6" style={{ marginTop: '10px', marginBottom: '5px' }}>
-          {option.title}
-        </Typography>
-        <Typography variant="body2" style={{ color: 'rgba(0, 0, 0, 0.7)' }}>{option.description}</Typography>
-      </Paper>
+      {options.map((option) => (
+        <Grid item key={option.id} xs={10} sm={6} md={4} lg={3}>
+          <Paper
+            onClick={() => handleClick(option)}
+            style={{
+              cursor: 'pointer',
+              padding: '40px',
+              textAlign: 'center',
+              boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
+              minWidth: '250px',
+              transition: 'transform 0.3s ease'
+            }}
+            className="hoverPaper"
+          >
+            {option.icon}
+            <Typography variant="h5" style={{ marginTop: '20px', marginBottom: '10px' }}>
+              {option.title}
+            </Typography>
+            <Typography variant="body1" style={{ color: 'rgba(0, 0, 0, 0.7)' }}>{option.description}</Typography>
+          </Paper>
+        </Grid>
+      ))}
     </Grid>
-  ))}
-</Grid>
 
     </div>
   );
