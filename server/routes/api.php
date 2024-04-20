@@ -1,12 +1,12 @@
 <?php
 
-use App\Http\Controllers\OfficeOrderController;
-use App\Http\Controllers\TenderController;
-use App\Http\Controllers\NoticeController;
-use App\Http\Controllers\DepartmentSectionController;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\DepartmentSectionController;
+use App\Http\Controllers\NoticeController;
+use App\Http\Controllers\OfficeOrderController;
+use App\Http\Controllers\TenderController;
+use Illuminate\Support\Facades\Route;
 use App\Models\OfficeOrder;
 use App\Models\Tender;
 use App\Models\Notice;
@@ -22,6 +22,7 @@ use App\Models\Notice;
 |
 */
 
+// Fallback route for invalid routes
 Route::fallback(function () {
     return response()->json([
         'status' => false,
@@ -29,10 +30,10 @@ Route::fallback(function () {
     ], 200);
 });
 
+// Authentication Routes
 Route::controller(AuthController::class)->group(function () {
     Route::post('login', 'login');
     Route::post('validateuser', 'validateUser');
-
     Route::post('login_api', 'login_api');
     Route::post('register', 'register');
     Route::post('logout', 'logout');
@@ -46,65 +47,56 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('GetBiometicAttendance', 'GetBiometicAttendance');
 });
 
-Route::prefix('catgories')->middleware('auth.check')->group(function () {
-    Route::controller(CategoryController::class)->group(function () {
-        Route::get('/', 'index');
-        Route::post('/', 'store');
-        Route::get('{id}', 'show');
-    });
+// Categories Routes
+Route::prefix('categories')->middleware('auth.check')->group(function () {
+    Route::get('/', [CategoryController::class, 'index']);
+    Route::post('/', [CategoryController::class, 'store']);
+    Route::get('/{id}', [CategoryController::class, 'show']);
 });
 
-Route::prefix('department-sections')->middleware('auth.check')->group(function () {
-    Route::controller(DepartmentSectionController::class)->group(function () {
-        Route::get('', [DepartmentSectionController::class, 'index']);
-        Route::post('', [DepartmentSectionController::class, 'store']);
-        Route::get('{id}', [DepartmentSectionController::class, 'show']);
-    });
+// Department Sections Routes
+Route::prefix('department-sections')->group(function () {
+    Route::get('', [DepartmentSectionController::class, 'index']);
+    Route::post('', [DepartmentSectionController::class, 'store']);
+    Route::get('{id}', [DepartmentSectionController::class, 'show']);
 });
 
+// Office Orders Routes
 Route::prefix('office-orders')->middleware('auth.check')->group(function () {
-    Route::controller(OfficeOrderController::class)->group(function () {
-        // Office Order Routes
-        Route::get('', [OfficeOrderController::class, 'index']);
-        Route::post('', [OfficeOrderController::class, 'store']);
-        Route::get('{id}', [OfficeOrderController::class, 'show']);
-        Route::post('{id}', [OfficeOrderController::class, 'update']);
-        Route::delete('{id}', [OfficeOrderController::class, 'destroy']);
-        Route::get('{id}/pdf', function ($id) {
-            return (new OfficeOrderController)->servePDF(OfficeOrder::class, $id);
-        })->name('office-orders.pdf');
-    });
+    Route::get('', [OfficeOrderController::class, 'index']);
+    Route::post('', [OfficeOrderController::class, 'store']);
+    Route::get('{id}', [OfficeOrderController::class, 'show']);
+    Route::post('{id}', [OfficeOrderController::class, 'update']);
+    Route::delete('{id}', [OfficeOrderController::class, 'destroy']);
+    Route::get('{id}/pdf', function ($id) {
+        return (new OfficeOrderController)->servePDF(OfficeOrder::class, $id);
+    })->name('office-orders.pdf');
 });
 
+// Tenders Routes
 Route::prefix('tenders')->middleware('auth.check')->group(function () {
-    Route::controller(TenderController::class)->group(function () {
-        // Office Order Routes
-        Route::get('', [TenderController::class, 'index']);
-        Route::post('', [TenderController::class, 'store']);
-        Route::get('{id}', [TenderController::class, 'show']);
-        Route::post('{id}', [TenderController::class, 'update']);
-        Route::delete('{id}', [TenderController::class, 'destroy']);
-        Route::get('{id}/pdf', function ($id) {
-            return (new TenderController)->servePDF(Tender::class, $id);
-        })->name('office-orders.pdf');
-    });
+    Route::get('', [TenderController::class, 'index']);
+    Route::post('', [TenderController::class, 'store']);
+    Route::get('{id}', [TenderController::class, 'show']);
+    Route::post('{id}', [TenderController::class, 'update']);
+    Route::delete('{id}', [TenderController::class, 'destroy']);
+    Route::get('{id}/pdf', function ($id) {
+        return (new TenderController)->servePDF(Tender::class, $id);
+    })->name('tenders.pdf');
 });
 
-
+// Notices Routes
 Route::prefix('notices')->middleware('auth.check')->group(function () {
-    Route::controller(NoticeController::class)->group(function () {
-        // Office Order Routes
-        Route::get('', [NoticeController::class, 'index']);
-        Route::post('', [NoticeController::class, 'store']);
-        Route::get('{id}', [NoticeController::class, 'show']);
-        Route::post('{id}', [NoticeController::class, 'update']);
-        Route::delete('{id}', [NoticeController::class, 'destroy']);
-        Route::get('{id}/pdf', function ($id) {
-            return (new NoticeController)->servePDF(Notice::class, $id);
-        })->name('office-orders.pdf');
-    });
+    Route::get('', [NoticeController::class, 'index']);
+    Route::post('', [NoticeController::class, 'store']);
+    Route::get('{id}', [NoticeController::class, 'show']);
+    Route::post('{id}', [NoticeController::class, 'update']);
+    Route::delete('{id}', [NoticeController::class, 'destroy']);
+    Route::get('{id}/pdf', function ($id) {
+        return (new NoticeController)->servePDF(Notice::class, $id);
+    })->name('notices.pdf');
 });
 
-// here add routes Module wise
+// Include additional routes module-wise
 include ('adminRoutes.php');
 include ('userRoutes.php');
